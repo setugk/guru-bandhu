@@ -82,17 +82,21 @@
     .fab:active { box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
 
     /* Schedule */
-    .day-strip { display: flex; overflow-x: auto; gap: 8px; padding: 14px 16px 8px; scrollbar-width: none; }
-    .day-strip::-webkit-scrollbar { display: none; }
-    .day-pill { display: flex; flex-direction: column; align-items: center; padding: 8px 12px; border-radius: var(--radius); cursor: pointer; min-width: 50px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); transition: all 0.12s; }
-    .day-pill.active { background: var(--accent); border-color: var(--accent); }
-    .dp-label { font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--text-3); }
-    .day-pill.active .dp-label { color: rgba(255,255,255,0.65); }
-    .dp-num { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 2px; }
-    .day-pill.active .dp-num { color: #fff; }
-    .dp-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-top: 5px; }
-    .day-pill.active .dp-dot { background: rgba(255,255,255,0.6); }
-    .dp-dot-empty { height: 5px; margin-top: 5px; }
+    .sched-mode-bar { display: flex; gap: 6px; padding: 12px 16px 8px; }
+    .sched-mode-btn { flex: 1; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text-3); font-family: inherit; transition: all 0.12s; }
+    .sched-mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .sched-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 12px 8px; min-height: 0; }
+    .sched-nav:empty { padding: 0; }
+    .sched-nav-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--text-2); }
+    .sched-nav-label { font-size: 14px; font-weight: 600; color: var(--text); }
+    .sched-date-group { margin-bottom: 4px; }
+    .sched-date-head { padding: 14px 20px 6px; font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+    .sched-date-head.today { color: var(--accent); }
+    .sched-no-class { padding: 8px 20px 10px; font-size: 13px; color: var(--text-muted); }
+    .sched-status { font-size: 13px; font-weight: 600; flex-shrink: 0; padding-top: 1px; }
+    .sched-status.completed { color: var(--success); }
+    .sched-status.missed    { color: var(--danger); }
+    .sched-status.unmarked  { color: var(--text-muted); }
 
 .class-slot { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
     .class-slot:active { background: var(--bg-subtle); }
@@ -249,7 +253,12 @@
   <main id="main">
     <!-- Schedule tab -->
     <div id="view-schedule" class="view active">
-      <div class="day-strip" id="day-strip"></div>
+      <div class="sched-mode-bar">
+        <button class="sched-mode-btn active" data-mode="list" onclick="setSchedMode('list')">All</button>
+        <button class="sched-mode-btn" data-mode="week" onclick="setSchedMode('week')">Week</button>
+        <button class="sched-mode-btn" data-mode="month" onclick="setSchedMode('month')">Month</button>
+      </div>
+      <div class="sched-nav" id="sched-nav"></div>
       <div id="schedule-list"></div>
     </div>
 
@@ -525,7 +534,8 @@ let students = [], settings = { teacherName: '' }, guruTZ = 'Asia/Kolkata';
 let editingStudentId = null, viewingStudentId = null;
 let schedulingStudentId = null, scheduleSimpleMode = false;
 let editingBandishStudentId = null, editingBandishId = null;
-let currentTab = 'schedule', scheduleDay = 0;
+let currentTab = 'schedule';
+let schedMode = 'list', schedWeekOffset = 0, schedMonthOffset = 0;
 let payStudentId = null;
 let showArchived = false, pastLessonsOpen = false, payUpToDateOpen = false;
 
@@ -608,59 +618,157 @@ function populateTZSelect(selectId, selected) {
 }
 
 // ── Render: Schedule ───────────────────────────────────────────────────────
-function renderSchedule() {
-  const today = guruToday();
-  const days = Array.from({length:7}, (_,i) => addDays(today, i));
-  document.getElementById('day-strip').innerHTML = days.map((ds,i) => {
-    const hasCls = classesOnDate(ds).length > 0;
-    return `<div class="day-pill${i===scheduleDay?' active':''}" onclick="pickDay(${i})">
-      <span class="dp-label">${dayLabel(ds)}</span>
-      <span class="dp-num">${dayNum(ds)}</span>
-      ${hasCls ? `<span class="dp-dot"></span>` : `<span class="dp-dot-empty"></span>`}
-    </div>`;
-  }).join('');
-  renderScheduleDay(days[scheduleDay]);
+// ── Schedule helpers ────────────────────────────────────────────────────────
+function getAllClassEvents() {
+  const now = new Date();
+  const events = [];
+  students.filter(s => !s.archived).forEach(s => {
+    (s.classHistory||[]).forEach(c => {
+      events.push({ utcISO: c.utcISO, student: s, duration: c.duration||60, notes: c.notes||'', status: c.status, isPast: true, isHistory: true, histId: c.id });
+    });
+    if (s.nextClass) {
+      const isPast = new Date(s.nextClass.utcISO) < now;
+      events.push({ utcISO: s.nextClass.utcISO, student: s, duration: s.nextClass.duration||60, notes: s.nextClass.notes||'', status: null, isPast, isHistory: false });
+    }
+  });
+  return events.sort((a, b) => new Date(a.utcISO) - new Date(b.utcISO));
 }
 
-function renderScheduleDay(dateStr) {
-  const classes = classesOnDate(dateStr);
-  const today = guruToday();
-  const lbl = dateStr===today ? 'Today' : dateStr===addDays(today,1) ? 'Tomorrow'
-    : new Date(dateStr+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+function groupByDate(events) {
+  const map = {};
+  events.forEach(e => {
+    const d = utcToGuruDateStr(e.utcISO);
+    if (!map[d]) map[d] = [];
+    map[d].push(e);
+  });
+  return map;
+}
 
+function schedClassCardHTML(e, today) {
+  const s = e.student;
+  const guruTime = fmtTimeInTZ(e.utcISO, guruTZ);
+  const stuLine  = s.timezone ? `<div class="class-tz">${esc(s.name.split(' ')[0])}: ${fmtTimeInTZ(e.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>` : '';
+  const noteLine = e.notes ? ` · ${esc(e.notes)}` : '';
+  let right = '';
+  if (!e.isPast) {
+    right = `<button class="class-edit-btn" onclick="event.stopPropagation();openScheduleSheet('${s.id}',false)" title="Reschedule"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`;
+  } else if (e.status === 'completed') {
+    right = `<span class="sched-status completed">✓</span>`;
+  } else if (e.status === 'missed') {
+    right = `<span class="sched-status missed">✗</span>`;
+  } else {
+    right = `<span class="sched-status unmarked">—</span>`;
+  }
+  return `<div class="class-slot" onclick="openDetail('${s.id}')">
+    <div class="class-time">${guruTime}</div>
+    <div class="class-info">
+      <div class="class-student">${esc(s.name)}</div>
+      <div class="class-sub">${e.duration} min${noteLine}</div>
+      ${stuLine}
+    </div>
+    ${right}
+  </div>`;
+}
+
+function schedDateGroupHTML(dateStr, events, today) {
+  const d   = new Date(dateStr + 'T12:00:00Z');
+  const lbl = dateStr === today       ? 'Today'
+            : dateStr === addDays(today, 1)  ? 'Tomorrow'
+            : dateStr === addDays(today, -1) ? 'Yesterday'
+            : d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const sorted = events.slice().sort((a, b) => new Date(a.utcISO) - new Date(b.utcISO));
+  const isToday = dateStr === today;
+  return `<div class="sched-date-group"${isToday ? ' id="sched-today-anchor"' : ''}>
+    <div class="sched-date-head${isToday ? ' today' : ''}">${lbl}</div>
+    ${sorted.map(e => schedClassCardHTML(e, today)).join('')}
+  </div>`;
+}
+
+// ── Schedule renderers ──────────────────────────────────────────────────────
+function setSchedMode(mode) {
+  schedMode = mode;
+  schedWeekOffset = 0;
+  schedMonthOffset = 0;
+  document.querySelectorAll('.sched-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  renderSchedule();
+}
+
+function renderSchedule() {
+  document.querySelectorAll('.sched-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === schedMode));
+  if (schedMode === 'week')       renderSchedWeek();
+  else if (schedMode === 'month') renderSchedMonth();
+  else                            renderSchedList();
+}
+
+function renderSchedList() {
+  document.getElementById('sched-nav').innerHTML = '';
+  const today  = guruToday();
+  const events = getAllClassEvents();
   const listEl = document.getElementById('schedule-list');
-  if (!classes.length) {
-    listEl.innerHTML = `<div class="section-lbl">${lbl}</div>
-      <div class="empty-state" style="padding:36px 32px;">
-        <div class="empty-icon">🥁</div>
-        <div class="empty-title">No classes</div>
-        <div class="empty-desc">Swipe left or right to browse dates,<br>or tap Create Schedule above.</div>
-      </div>`;
+  if (!events.length) {
+    listEl.innerHTML = `<div class="empty-state" style="padding:48px 32px;"><div class="empty-icon">🥁</div><div class="empty-title">No classes yet</div><div class="empty-desc">Tap + to schedule a class</div></div>`;
     return;
   }
+  const groups = groupByDate(events);
+  const dates  = Object.keys(groups).sort();
+  listEl.innerHTML = dates.map(d => schedDateGroupHTML(d, groups[d], today)).join('');
+  requestAnimationFrame(() => {
+    const anchor = document.getElementById('sched-today-anchor');
+    if (anchor) anchor.scrollIntoView({ block: 'start' });
+    else {
+      const firstFuture = dates.find(d => d >= today);
+      if (firstFuture) {
+        const el = listEl.querySelector(`[id="sched-today-anchor"]`) || listEl.firstElementChild;
+        if (el) el.scrollIntoView({ block: 'start' });
+      }
+    }
+  });
+}
 
-  listEl.innerHTML = `<div class="section-lbl">${lbl}</div>` + classes.map(s => {
-    const guruTime = fmtTimeInTZ(s.nextClass.utcISO, guruTZ);
-    // Student's local time line
-    const studentTimeLine = s.timezone
-      ? `<div class="class-tz">${esc(s.name.split(' ')[0])}: ${fmtTimeInTZ(s.nextClass.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>`
-      : '';
-    return `
-      <div class="class-slot" onclick="openDetail('${s.id}')">
-        <div class="class-time">${guruTime}</div>
-        <div class="class-info">
-          <div class="class-student">${esc(s.name)}</div>
-          <div class="class-sub">${s.nextClass.duration||60} min${s.nextClass.notes ? ' · ' + esc(s.nextClass.notes) : ''}</div>
-          ${studentTimeLine}
-        </div>
-        <button class="class-edit-btn" onclick="event.stopPropagation();openScheduleSheet('${s.id}',false)" title="Reschedule">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-      </div>`;
+function renderSchedWeek() {
+  const today = guruToday();
+  const start = addDays(today, schedWeekOffset * 7);
+  const days  = Array.from({ length: 7 }, (_, i) => addDays(start, i));
+  const startFmt = new Date(start + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const endFmt   = new Date(addDays(start, 6) + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  document.getElementById('sched-nav').innerHTML = `
+    <button class="sched-nav-btn" onclick="schedWeekOffset--;renderSchedule()">‹</button>
+    <span class="sched-nav-label">${startFmt} – ${endFmt}</span>
+    <button class="sched-nav-btn" onclick="schedWeekOffset++;renderSchedule()">›</button>`;
+  const grouped = groupByDate(getAllClassEvents());
+  document.getElementById('schedule-list').innerHTML = days.map(d => {
+    const evts  = grouped[d] || [];
+    const isToday = d === today;
+    const lbl   = d === today ? 'Today' : d === addDays(today, 1) ? 'Tomorrow'
+      : new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+    if (!evts.length) return `<div class="sched-date-group"><div class="sched-date-head${isToday ? ' today' : ''}">${lbl}</div><div class="sched-no-class">No class</div></div>`;
+    return schedDateGroupHTML(d, evts, today);
   }).join('');
 }
 
-function pickDay(i) { scheduleDay = i; renderSchedule(); }
+function renderSchedMonth() {
+  const today   = guruToday();
+  const [cy, cm] = today.split('-').map(Number);
+  const tgt     = new Date(cy, cm - 1 + schedMonthOffset, 1);
+  const year    = tgt.getFullYear(), month = tgt.getMonth();
+  const monthStr = tgt.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const pad     = n => String(n).padStart(2, '0');
+  const mStart  = `${year}-${pad(month + 1)}-01`;
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const mEnd    = `${year}-${pad(month + 1)}-${pad(lastDay)}`;
+  document.getElementById('sched-nav').innerHTML = `
+    <button class="sched-nav-btn" onclick="schedMonthOffset--;renderSchedule()">‹</button>
+    <span class="sched-nav-label">${monthStr}</span>
+    <button class="sched-nav-btn" onclick="schedMonthOffset++;renderSchedule()">›</button>`;
+  const events = getAllClassEvents().filter(e => { const d = utcToGuruDateStr(e.utcISO); return d >= mStart && d <= mEnd; });
+  const listEl = document.getElementById('schedule-list');
+  if (!events.length) {
+    listEl.innerHTML = `<div class="empty-state" style="padding:48px 32px;"><div class="empty-icon">🥁</div><div class="empty-title">No classes in ${monthStr}</div></div>`;
+    return;
+  }
+  const groups = groupByDate(events);
+  listEl.innerHTML = Object.keys(groups).sort().map(d => schedDateGroupHTML(d, groups[d], today)).join('');
+}
 
 // ── Render: Students ───────────────────────────────────────────────────────
 function renderStudents(q = '') {
@@ -1366,7 +1474,6 @@ function refreshAll() {
 let swipeStartX = null, swipeStartY = null;
 const schedView = document.getElementById('view-schedule');
 schedView.addEventListener('touchstart', e => {
-  if (document.getElementById('day-strip').contains(e.target)) { swipeStartX=null; return; }
   swipeStartX = e.touches[0].clientX;
   swipeStartY = e.touches[0].clientY;
 }, {passive:true});
@@ -1376,8 +1483,13 @@ schedView.addEventListener('touchend', e => {
   const dy = e.changedTouches[0].clientY - swipeStartY;
   swipeStartX = swipeStartY = null;
   if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-  if (dx < 0 && scheduleDay < 6) { scheduleDay++; renderSchedule(); }
-  else if (dx > 0 && scheduleDay > 0) { scheduleDay--; renderSchedule(); }
+  if (schedMode === 'week') {
+    if (dx < 0) { schedWeekOffset++; renderSchedule(); }
+    else        { schedWeekOffset--; renderSchedule(); }
+  } else if (schedMode === 'month') {
+    if (dx < 0) { schedMonthOffset++; renderSchedule(); }
+    else        { schedMonthOffset--; renderSchedule(); }
+  }
 }, {passive:true});
 
 // ── Events ─────────────────────────────────────────────────────────────────
