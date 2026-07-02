@@ -1407,7 +1407,9 @@ function openPaySheet(studentId, paymentId) {
     // Edit mode — pre-fill from existing record
     const p = (s?.payments||[]).find(x => x.id === payEditingId);
     document.getElementById('ps-title').textContent = 'Edit Payment';
-    document.getElementById('p-context').innerHTML  = '';
+    const ctx = document.getElementById('p-context');
+    ctx.innerHTML = '';
+    ctx.style.display = 'none';
     document.getElementById('p-classes').value = p?.classesCount ?? '';
     document.getElementById('p-currency').value = p?.currency || studentCurrency(s) || '₹';
     document.getElementById('p-amount').value  = p?.amount ?? '';
@@ -1422,7 +1424,9 @@ function openPaySheet(studentId, paymentId) {
       `${ps.paidClasses} already paid for`,
       `${ps.unpaid} unpaid → ${classesDue} classes now due`,
     ] : [];
-    document.getElementById('p-context').innerHTML = ctxLines.map(l=>`<div>${esc(l)}</div>`).join('');
+    const pCtx = document.getElementById('p-context');
+    pCtx.style.display = ctxLines.length ? '' : 'none';
+    pCtx.innerHTML = ctxLines.map(l=>`<div>${esc(l)}</div>`).join('');
     document.getElementById('p-classes').value = classesDue || (ps?.cadence || 4);
     document.getElementById('p-currency').value = c;
     document.getElementById('p-amount').value  = ps?.amountDue || '';
