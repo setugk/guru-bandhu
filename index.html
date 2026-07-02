@@ -704,7 +704,7 @@ function schedDateGroupHTML(dateStr, events, today) {
             : d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   const sorted = events.slice().sort((a, b) => new Date(a.utcISO) - new Date(b.utcISO));
   const isToday = dateStr === today;
-  return `<div class="sched-date-group"${isToday ? ' id="sched-today-anchor"' : ''}>
+  return `<div class="sched-date-group" data-date="${dateStr}"${isToday ? ' id="sched-today-anchor"' : ''}>
     <div class="sched-date-head${isToday ? ' today' : ''}">${lbl}</div>
     ${sorted.map(e => schedClassCardHTML(e, today)).join('')}
   </div>`;
@@ -720,14 +720,14 @@ function setSchedMode(mode) {
   renderSchedule();
 }
 
-function renderSchedule() {
+function renderSchedule(scrollToDate) {
   document.querySelectorAll('.sched-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === schedMode));
   if (schedMode === 'week')       renderSchedWeek();
   else if (schedMode === 'month') renderSchedMonth();
-  else                            renderSchedList();
+  else                            renderSchedList(scrollToDate);
 }
 
-function renderSchedList() {
+function renderSchedList(scrollToDate) {
   document.getElementById('sched-nav').innerHTML = '';
   const today  = guruToday();
   const events = getAllClassEvents();
@@ -740,15 +740,12 @@ function renderSchedList() {
   const dates  = Object.keys(groups).sort();
   listEl.innerHTML = dates.map(d => schedDateGroupHTML(d, groups[d], today)).join('');
   requestAnimationFrame(() => {
-    const anchor = document.getElementById('sched-today-anchor');
-    if (anchor) anchor.scrollIntoView({ block: 'start' });
-    else {
-      const firstFuture = dates.find(d => d >= today);
-      if (firstFuture) {
-        const el = listEl.querySelector(`[id="sched-today-anchor"]`) || listEl.firstElementChild;
-        if (el) el.scrollIntoView({ block: 'start' });
-      }
-    }
+    const target = scrollToDate || today;
+    const el = listEl.querySelector(`[data-date="${target}"]`)
+            || document.getElementById('sched-today-anchor')
+            || listEl.querySelector(`[data-date="${dates.find(d => d >= today)}"]`)
+            || listEl.firstElementChild;
+    if (el) el.scrollIntoView({ block: 'start' });
   });
 }
 
@@ -1277,20 +1274,33 @@ function saveScheduleClass() {
 
   const s = students.find(x=>x.id===sid);
   if (!s) return;
-  // Archive previous nextClass to history if it's in the past (status=null → needs marking)
-  if (s.nextClass && new Date(s.nextClass.utcISO) < new Date()) {
-    if (!s.classHistory) s.classHistory = [];
-    s.classHistory.push({ ...s.nextClass, id: uid(), status: null });
+
+  const now = new Date();
+  if (s.nextClass) {
+    if (new Date(s.nextClass.utcISO) < now) {
+      // Past nextClass → archive to history for marking
+      if (!s.classHistory) s.classHistory = [];
+      s.classHistory.push({ ...s.nextClass, id: uid(), status: null });
+    } else {
+      // Future nextClass — confirm before overwriting
+      const existingDate = new Date(s.nextClass.utcISO).toLocaleDateString('en-US', { timeZone: guruTZ, weekday: 'short', month: 'short', day: 'numeric' });
+      if (!confirm(`${s.name} already has a class on ${existingDate}. Replace it with the new one?`)) return;
+    }
   }
+
+  const newUtcISO = guruLocalToUTC(date, time);
   const dur = scheduleSimpleMode ? (s.classDuration||60) : (parseInt(document.getElementById('sc-duration').value)||60);
   s.nextClass = {
-    utcISO: guruLocalToUTC(date, time),
+    utcISO: newUtcISO,
     duration: dur,
     notes: scheduleSimpleMode ? '' : document.getElementById('sc-notes').value.trim()
   };
   saveStudents();
   closeSheet('schedule-class-sheet');
-  renderSchedule();
+
+  // Always switch to All view and scroll to the newly scheduled class
+  schedMode = 'list';
+  renderSchedule(utcToGuruDateStr(newUtcISO));
   if (currentTab==='students') renderStudents(document.getElementById('search-input').value);
   if (viewingStudentId === sid && document.getElementById('student-page').classList.contains('open')) {
     renderClassesPanel(s);
