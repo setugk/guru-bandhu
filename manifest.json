@@ -1,6 +1,6 @@
 {
-  "name": "Guru",
-  "short_name": "Guru",
+  "name": "Guru Bandhu",
+  "short_name": "Guru Bandhu",
   "description": "Class and student management for music teachers",
   "start_url": "./index.html",
   "display": "standalone",
