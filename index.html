@@ -477,7 +477,16 @@
   <div class="sheet-body">
     <div id="p-context" style="background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:var(--text-2);margin-bottom:16px;line-height:1.5;"></div>
     <div class="form-group"><label class="form-label">Classes covered</label><input type="number" class="form-input" id="p-classes" placeholder="4" min="1"></div>
-    <div class="form-group"><label class="form-label" id="p-fee-label">Amount paid</label><input type="number" class="form-input" id="p-amount" placeholder="0" min="0"></div>
+    <div class="form-row">
+      <div class="form-group" style="max-width:120px;">
+        <label class="form-label">Currency</label>
+        <select class="form-select" id="p-currency">
+          <option value="₹">₹ INR</option><option value="$">$ USD</option><option value="£">£ GBP</option>
+          <option value="€">€ EUR</option><option value="A$">A$ AUD</option><option value="C$">C$ CAD</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Amount paid</label><input type="number" class="form-input" id="p-amount" placeholder="0" min="0"></div>
+    </div>
     <div class="form-group"><label class="form-label">Date paid</label><input type="date" class="form-input" id="p-date"></div>
   </div>
   <div class="sheet-footer"><button class="btn btn-secondary" id="ps-cancel">Cancel</button><button class="btn btn-primary" id="ps-save">Save</button></div>
@@ -551,7 +560,7 @@ let schedulingStudentId = null, scheduleSimpleMode = false;
 let editingBandishStudentId = null, editingBandishId = null;
 let currentTab = 'schedule';
 let schedMode = 'list', schedWeekOffset = 0, schedWeekDay = 0, schedMonthOffset = 0;
-let payStudentId = null;
+let payStudentId = null, payEditingId = null;
 let showArchived = false, pastLessonsOpen = false, payUpToDateOpen = false;
 
 // ── Persistence ────────────────────────────────────────────────────────────
@@ -1033,9 +1042,14 @@ function renderDetailPayments(s) {
         const pStatus = p.status || 'paid';
         const pCurr   = p.currency || c;
         return `<div class="class-history-item">
-          <div>
-            <div style="font-size:14px;font-weight:500;">${pCurr}${(p.amount||0).toLocaleString()}</div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${p.classesCount||0} class${(p.classesCount||0)!==1?'es':''} · ${p.paidDate ? fmtDate(p.paidDate) : '—'}</div>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div style="font-size:14px;font-weight:500;">${pCurr}${(p.amount||0).toLocaleString()}</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${p.classesCount||0} class${(p.classesCount||0)!==1?'es':''} · ${p.paidDate ? fmtDate(p.paidDate) : '—'}</div>
+            </div>
+            <button class="sheet-hdr-btn" onclick="openPaySheet('${s.id}','${p.id}')" title="Edit payment">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
           </div>
           <div class="class-status-btns">
             <button class="class-status-btn${pStatus==='paid'?' paid':''}" onclick="togglePaymentStatus('${s.id}','${p.id}','paid')">Paid</button>
@@ -1383,23 +1397,37 @@ function deleteStudent() {
 }
 
 // ── Payment sheet ──────────────────────────────────────────────────────────
-function openPaySheet(studentId) {
-  payStudentId = studentId;
+function openPaySheet(studentId, paymentId) {
+  payStudentId  = studentId;
+  payEditingId  = paymentId || null;
   const s  = students.find(x => x.id === studentId);
-  const c  = s ? studentCurrency(s) : '$';
   const ps = s ? getPaymentStatus(s) : null;
-  document.getElementById('ps-title').textContent = s ? `${s.name} · Payment` : 'Payment';
-  document.getElementById('p-fee-label').textContent = `Amount (${c})`;
-  const classesDue = ps ? ps.batches * ps.cadence : (ps?.cadence || 4);
-  const ctxLines = ps ? [
-    `${ps.completed} total completed classes`,
-    `${ps.paidClasses} already paid for`,
-    `${ps.unpaid} unpaid → ${classesDue} classes now due`,
-  ] : [];
-  document.getElementById('p-context').innerHTML = ctxLines.map(l=>`<div>${esc(l)}</div>`).join('');
-  document.getElementById('p-classes').value = classesDue || (ps?.cadence || 4);
-  document.getElementById('p-amount').value  = ps?.amountDue || '';
-  document.getElementById('p-date').value    = new Date().toISOString().slice(0, 10);
+
+  if (payEditingId) {
+    // Edit mode — pre-fill from existing record
+    const p = (s?.payments||[]).find(x => x.id === payEditingId);
+    document.getElementById('ps-title').textContent = 'Edit Payment';
+    document.getElementById('p-context').innerHTML  = '';
+    document.getElementById('p-classes').value = p?.classesCount ?? '';
+    document.getElementById('p-currency').value = p?.currency || studentCurrency(s) || '₹';
+    document.getElementById('p-amount').value  = p?.amount ?? '';
+    document.getElementById('p-date').value    = p?.paidDate || '';
+  } else {
+    // New payment mode
+    const c = s ? studentCurrency(s) : '$';
+    const classesDue = ps ? ps.batches * ps.cadence : (ps?.cadence || 4);
+    document.getElementById('ps-title').textContent = s ? `${s.name} · Payment` : 'Payment';
+    const ctxLines = ps ? [
+      `${ps.completed} total completed classes`,
+      `${ps.paidClasses} already paid for`,
+      `${ps.unpaid} unpaid → ${classesDue} classes now due`,
+    ] : [];
+    document.getElementById('p-context').innerHTML = ctxLines.map(l=>`<div>${esc(l)}</div>`).join('');
+    document.getElementById('p-classes').value = classesDue || (ps?.cadence || 4);
+    document.getElementById('p-currency').value = c;
+    document.getElementById('p-amount').value  = ps?.amountDue || '';
+    document.getElementById('p-date').value    = new Date().toISOString().slice(0, 10);
+  }
   openSheet('payment-sheet');
 }
 
@@ -1407,11 +1435,18 @@ function savePayment() {
   const s = students.find(x => x.id === payStudentId);
   if (!s) return;
   const classesCount = parseInt(document.getElementById('p-classes').value) || 0;
-  if (!classesCount) return;
-  const amount   = parseFloat(document.getElementById('p-amount').value) || 0;
-  const paidDate = document.getElementById('p-date').value;
-  if (!s.payments) s.payments = [];
-  s.payments.push({ id: uid(), classesCount, amount, paidDate, status: 'paid', currency: studentCurrency(s) });
+  const amount    = parseFloat(document.getElementById('p-amount').value) || 0;
+  const paidDate  = document.getElementById('p-date').value;
+  const currency  = document.getElementById('p-currency').value || studentCurrency(s);
+
+  if (payEditingId) {
+    const p = (s.payments||[]).find(x => x.id === payEditingId);
+    if (p) { p.classesCount = classesCount; p.amount = amount; p.paidDate = paidDate; p.currency = currency; }
+  } else {
+    if (!classesCount) return;
+    if (!s.payments) s.payments = [];
+    s.payments.push({ id: uid(), classesCount, amount, paidDate, status: 'paid', currency });
+  }
   saveStudents();
   closeSheet('payment-sheet');
   renderDetailPayments(s);
