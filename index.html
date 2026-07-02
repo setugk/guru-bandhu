@@ -94,13 +94,15 @@
     .dp-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-top: 5px; }
     .day-pill.active .dp-dot { background: rgba(255,255,255,0.6); }
     .dp-dot-empty { height: 5px; margin-top: 5px; }
+    .sched-sticky-header { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--border); }
     .sched-mode-bar { display: flex; gap: 6px; padding: 12px 16px 8px; }
     .sched-mode-btn { flex: 1; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text-3); font-family: inherit; transition: all 0.12s; }
     .sched-mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .sched-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 12px 8px; min-height: 0; }
-    .sched-nav:empty { padding: 0; }
-    .sched-nav-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--text-2); }
-    .sched-nav-label { font-size: 14px; font-weight: 600; color: var(--text); }
+    .sched-nav { display: flex; align-items: center; gap: 6px; padding: 0 12px 10px; }
+    .sched-nav-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--text-2); flex-shrink: 0; }
+    .sched-nav-label { flex: 1; text-align: center; font-size: 14px; font-weight: 600; color: var(--text); }
+    .sched-today-btn { background: none; border: 1px solid var(--border-mid); border-radius: var(--radius-sm); padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-2); font-family: inherit; white-space: nowrap; flex-shrink: 0; }
+    .sched-today-btn:active { background: var(--bg-subtle); }
     .sched-date-group { margin-bottom: 4px; }
     .sched-date-head { padding: 14px 20px 6px; font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
     .sched-date-head.today { color: var(--accent); }
@@ -291,12 +293,13 @@
   <main id="main">
     <!-- Schedule tab -->
     <div id="view-schedule" class="view active">
-      <div class="sched-mode-bar">
-        <button class="sched-mode-btn active" data-mode="list" onclick="setSchedMode('list')">All</button>
-        <button class="sched-mode-btn" data-mode="week" onclick="setSchedMode('week')">Week</button>
-        <button class="sched-mode-btn" data-mode="month" onclick="setSchedMode('month')">Month</button>
+      <div class="sched-sticky-header">
+        <div class="sched-mode-bar">
+          <button class="sched-mode-btn active" data-mode="week" onclick="setSchedMode('week')">Week</button>
+          <button class="sched-mode-btn" data-mode="month" onclick="setSchedMode('month')">Month</button>
+        </div>
+        <div class="sched-nav" id="sched-nav"></div>
       </div>
-      <div class="sched-nav" id="sched-nav"></div>
       <div id="schedule-list"></div>
     </div>
 
@@ -584,7 +587,7 @@ let editingStudentId = null, viewingStudentId = null;
 let schedulingStudentId = null, scheduleSimpleMode = false;
 let editingBandishStudentId = null, editingBandishId = null;
 let currentTab = 'schedule';
-let schedMode = 'list', schedWeekOffset = 0, schedWeekDay = 0, schedMonthOffset = 0;
+let schedMode = 'week', schedWeekOffset = 0, schedWeekDay = 0, schedMonthOffset = 0;
 let schedExpandedKey = null, schedCalDate = null;
 let payStudentId = null, payEditingId = null;
 let showArchived = false, pastLessonsOpen = false, payUpToDateOpen = false;
@@ -757,11 +760,10 @@ function setSchedMode(mode) {
   renderSchedule();
 }
 
-function renderSchedule(scrollToDate) {
+function renderSchedule() {
   document.querySelectorAll('.sched-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === schedMode));
-  if (schedMode === 'week')       renderSchedWeek();
-  else if (schedMode === 'month') renderSchedMonth();
-  else                            renderSchedList(scrollToDate);
+  if (schedMode === 'month') renderSchedMonth();
+  else                       renderSchedWeek();
 }
 
 function renderSchedList(scrollToDate) {
@@ -792,9 +794,12 @@ function renderSchedWeek() {
   const days    = Array.from({ length: 7 }, (_, i) => addDays(start, i));
   const startFmt = new Date(start + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const endFmt   = new Date(addDays(start, 6) + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const weekTodayBtn = schedWeekOffset !== 0
+    ? `<button class="sched-today-btn" onclick="schedWeekOffset=0;schedWeekDay=0;renderSchedule()">Today</button>` : '';
   document.getElementById('sched-nav').innerHTML = `
     <button class="sched-nav-btn" onclick="schedWeekOffset--;schedWeekDay=0;renderSchedule()">‹</button>
     <span class="sched-nav-label">${startFmt} – ${endFmt}</span>
+    ${weekTodayBtn}
     <button class="sched-nav-btn" onclick="schedWeekOffset++;schedWeekDay=0;renderSchedule()">›</button>`;
 
   const grouped = groupByDate(getAllClassEvents());
@@ -833,9 +838,12 @@ function renderSchedMonth() {
   const mStart   = `${year}-${pad(month + 1)}-01`;
   const mEnd     = `${year}-${pad(month + 1)}-${pad(lastDay)}`;
 
+  const monthTodayBtn = schedMonthOffset !== 0
+    ? `<button class="sched-today-btn" onclick="schedMonthOffset=0;schedCalDate=null;renderSchedule()">Today</button>` : '';
   document.getElementById('sched-nav').innerHTML = `
     <button class="sched-nav-btn" onclick="schedMonthOffset--;schedCalDate=null;renderSchedule()">‹</button>
     <span class="sched-nav-label">${monthStr}</span>
+    ${monthTodayBtn}
     <button class="sched-nav-btn" onclick="schedMonthOffset++;schedCalDate=null;renderSchedule()">›</button>`;
 
   // Build date → events map for this month
@@ -1443,9 +1451,16 @@ function saveScheduleClass() {
   saveStudents();
   closeSheet('schedule-class-sheet');
 
-  // Always switch to All view and scroll to the newly scheduled class
-  schedMode = 'list';
-  renderSchedule(utcToGuruDateStr(newUtcISO));
+  // Switch to Week view showing the newly scheduled class
+  const newDateStr = utcToGuruDateStr(newUtcISO);
+  const todayStr   = guruToday();
+  const [ty, tm, td] = todayStr.split('-').map(Number);
+  const [ny, nm, nd] = newDateStr.split('-').map(Number);
+  const diff = Math.round((Date.UTC(ny, nm-1, nd) - Date.UTC(ty, tm-1, td)) / 86400000);
+  schedMode = 'week';
+  schedWeekOffset = Math.floor(diff / 7);
+  schedWeekDay = ((diff % 7) + 7) % 7;
+  renderSchedule();
   if (currentTab==='students') renderStudents(document.getElementById('search-input').value);
   if (viewingStudentId === sid && document.getElementById('student-page').classList.contains('open')) {
     renderClassesPanel(s);
