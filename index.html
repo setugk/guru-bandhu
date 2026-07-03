@@ -293,7 +293,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title">Guru Bandhu<span class="app-version">v1.24</span></span>
+    <span class="header-title">Guru Bandhu<span class="app-version">v1.25</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -1200,7 +1200,7 @@ function renderDetailPayments(s) {
   } else {
     const inCredit = ps.unpaid < 0;
     const barN   = inCredit ? ps.completed % ps.cadence : ps.progress;
-    const barLbl = inCredit ? `${barN} of ${ps.cadence} classes used` : `${barN} of ${ps.cadence} classes toward next payment`;
+    const barLbl = inCredit ? `${barN} of ${ps.cadence} classes completed` : `${barN} of ${ps.cadence} classes toward next payment`;
     const pct    = ps.cadence > 0 ? Math.round(barN / ps.cadence * 100) : 0;
     statusHTML = `
       <div class="pay-status-card ok">
@@ -1226,9 +1226,14 @@ function renderDetailPayments(s) {
               <div style="font-size:14px;font-weight:500;">${pCurr}${(p.amount||0).toLocaleString()}</div>
               <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${p.classesCount||0} class${(p.classesCount||0)!==1?'es':''} · ${p.paidDate ? fmtDate(p.paidDate) : '—'}</div>
             </div>
-            <button class="sheet-hdr-btn" onclick="openPaySheet('${s.id}','${p.id}')" title="Edit payment">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
+            <div style="display:flex;gap:4px;">
+              <button class="sheet-hdr-btn" onclick="openPaySheet('${s.id}','${p.id}')" title="Edit payment">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button class="sheet-hdr-btn" onclick="deletePayment('${s.id}','${p.id}')" title="Delete payment" style="color:var(--danger,#ef4444);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              </button>
+            </div>
           </div>
           <div class="class-status-btns">
             <button class="class-status-btn${pStatus==='paid'?' paid':''}" onclick="togglePaymentStatus('${s.id}','${p.id}','paid')">Paid</button>
@@ -1693,6 +1698,16 @@ function savePayment() {
   }
   saveStudents();
   closeSheet('payment-sheet');
+  renderDetailPayments(s);
+  if (currentTab === 'payments') renderPayments();
+}
+
+function deletePayment(studentId, paymentId) {
+  const s = students.find(x => x.id === studentId);
+  if (!s) return;
+  if (!confirm('Delete this payment record?')) return;
+  s.payments = (s.payments||[]).filter(p => p.id !== paymentId);
+  saveStudents();
   renderDetailPayments(s);
   if (currentTab === 'payments') renderPayments();
 }
