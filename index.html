@@ -294,7 +294,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title">Guru Bandhu<span class="app-version">v1.16</span></span>
+    <span class="header-title">Guru Bandhu<span class="app-version">v1.17</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -1224,7 +1224,7 @@ function renderClassesPanel(s) {
   if (s.nextClass && new Date(s.nextClass.utcISO) >= now) {
     const guruTime  = fmtTimeInTZ(s.nextClass.utcISO, guruTZ);
     const dateStr   = new Date(s.nextClass.utcISO).toLocaleDateString('en-US', { timeZone: guruTZ, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-    const stuLine   = s.timezone ? `<div style="font-size:13px;color:var(--text-3);margin-top:4px;">${esc(s.name.split(' ')[0])}: ${fmtTimeInTZ(s.nextClass.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>` : '';
+    const stuLine   = s.timezone ? `<div style="font-size:13px;color:var(--text-3);margin-top:4px;">Student's local time: ${fmtTimeInTZ(s.nextClass.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>` : '';
     const notesLine = s.nextClass.notes ? `<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">${esc(s.nextClass.notes)}</div>` : '';
     upcomingEl.innerHTML = `
       <div class="lessons-section-head" style="margin-top:0;"><span class="lessons-section-title">Upcoming</span></div>
