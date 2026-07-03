@@ -293,7 +293,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title">Guru Bandhu<span class="app-version">v1.30</span></span>
+    <span class="header-title">Guru Bandhu<span class="app-version">v1.31</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -688,17 +688,21 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 function studentCurrency(s) { return s.currency || '₹'; }
 
 function getPaymentStatus(s) {
-  const cadence     = s.payEveryNClasses || 4;
-  const rate        = s.classRate || 0;
-  const completed   = (s.classHistory||[]).filter(c => c.status === 'completed').length;
-  const paidClasses = (s.payments||[]).filter(p => (p.status||'paid') === 'paid').reduce((sum, p) => sum + (p.classesCount||0), 0);
-  const unpaid      = completed - paidClasses;
-  const owedClasses = Math.max(0, unpaid);
-  const amountDue   = owedClasses * rate;
-  const progress    = owedClasses % cadence;
-  const isDue       = owedClasses >= cadence;
-  const isPastDue   = owedClasses > cadence;
-  return { cadence, rate, completed, paidClasses, unpaid, owedClasses, amountDue, progress, isDue, isPastDue };
+  const cadence        = s.payEveryNClasses || 4;
+  const rate           = s.classRate || 0;
+  const completed      = (s.classHistory||[]).filter(c => c.status === 'completed').length;
+  const paidPayments   = (s.payments||[]).filter(p => (p.status||'paid') === 'paid');
+  const paidClasses    = paidPayments.reduce((sum, p) => sum + (p.classesCount||0), 0);
+  const totalCollected = paidPayments.reduce((sum, p) => sum + (p.amount||0), 0);
+  const unpaid         = completed - paidClasses;
+  const owedClasses    = Math.max(0, unpaid);
+  const totalAccrued   = completed * rate;
+  const dollarBalance  = Math.max(0, totalAccrued - totalCollected);
+  const amountDue      = dollarBalance;
+  const progress       = owedClasses % cadence;
+  const isDue          = owedClasses >= cadence || dollarBalance > 0;
+  const isPastDue      = owedClasses > cadence;
+  return { cadence, rate, completed, paidClasses, totalCollected, totalAccrued, unpaid, owedClasses, dollarBalance, amountDue, progress, isDue, isPastDue };
 }
 
 function classesOnDate(dateStr) {
@@ -1189,18 +1193,21 @@ function renderDetailPayments(s) {
   let statusHTML;
   if (!ps.rate) {
     statusHTML = `<div class="pay-status-card na"><p style="font-size:13px;color:var(--text-3);">No fees set — edit student profile to add a per-class fee and payment cadence.</p></div>`;
-  } else if (ps.owedClasses > 0) {
+  } else if (ps.owedClasses > 0 || ps.dollarBalance > 0) {
     let label, subMsg;
     if (ps.isPastDue) {
       label  = 'Payment past due';
       subMsg = `${ps.owedClasses} classes completed — payment was missed`;
-    } else if (ps.isDue) {
+    } else if (ps.owedClasses >= ps.cadence) {
       label  = 'Payment due';
       subMsg = `${ps.owedClasses} class${ps.owedClasses!==1?'es':''} completed`;
-    } else {
+    } else if (ps.owedClasses > 0) {
       const moreNeeded = ps.cadence - ps.owedClasses;
       label  = 'Balance due';
       subMsg = `${ps.owedClasses} class${ps.owedClasses!==1?'es':''} completed · payment due after ${moreNeeded === 1 ? 'next class' : `${moreNeeded} more classes`}`;
+    } else {
+      label  = 'Balance due';
+      subMsg = `All classes paid for · ${c}${ps.totalCollected.toLocaleString()} received of ${c}${ps.totalAccrued.toLocaleString()}`;
     }
     statusHTML = `
       <div class="pay-status-card due">
