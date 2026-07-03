@@ -251,6 +251,8 @@
     .info-row-label { font-size: 13px; color: var(--text-3); }
     .info-row-val { font-size: 13px; color: var(--text); text-align: right; }
     .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+    .form-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+    .form-section-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px; }
 
     /* Empty state */
     .empty-state { text-align: center; padding: 48px 32px; }
@@ -292,7 +294,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title">Guru Bandhu<span class="app-version">v1.13</span></span>
+    <span class="header-title">Guru Bandhu<span class="app-version">v1.14</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -413,48 +415,67 @@
     <button class="sheet-close" id="sf-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   </div>
   <div class="sheet-body">
+    <!-- Contact -->
     <div class="form-group"><label class="form-label">Name *</label><input type="text" class="form-input" id="f-name" placeholder="Full name" autocomplete="off"></div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" id="f-phone" placeholder="+91 98765…"></div>
       <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="f-email" placeholder="optional"></div>
     </div>
-    <div class="form-row">
+
+    <!-- Schedule -->
+    <div class="form-section">
+      <div class="form-section-title">Schedule</div>
       <div class="form-group">
-        <label class="form-label">Currency</label>
-        <select class="form-select" id="f-currency">
-          <option value="₹">₹ INR</option><option value="$">$ USD</option><option value="£">£ GBP</option>
-          <option value="€">€ EUR</option><option value="A$">A$ AUD</option><option value="C$">C$ CAD</option>
-          <option value="AED">AED</option><option value="S$">S$ SGD</option>
-        </select>
+        <label class="form-label">Timezone</label>
+        <select class="form-select" id="f-timezone"><option value="">Not set</option></select>
       </div>
-      <div class="form-group"><label class="form-label">Fees per class</label><input type="number" class="form-input" id="f-class-rate" placeholder="0" min="0"></div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Pay every N classes</label>
-      <input type="number" class="form-input" id="f-pay-cadence" placeholder="4" min="1" max="99">
-      <p class="form-hint">Payment flagged as due after this many completed classes.</p>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Student's timezone</label>
-      <select class="form-select" id="f-timezone"><option value="">Not set</option></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Default class days <span style="color:var(--text-muted);font-weight:400;">(for reference)</span></label>
-      <div class="day-chips" id="f-days">
-        <div class="day-chip" data-day="Mon">Mon</div><div class="day-chip" data-day="Tue">Tue</div>
-        <div class="day-chip" data-day="Wed">Wed</div><div class="day-chip" data-day="Thu">Thu</div>
-        <div class="day-chip" data-day="Fri">Fri</div><div class="day-chip" data-day="Sat">Sat</div>
-        <div class="day-chip" data-day="Sun">Sun</div>
+      <div class="form-group">
+        <label class="form-label">Class days <span style="color:var(--text-muted);font-weight:400;">(for reference)</span></label>
+        <div class="day-chips" id="f-days">
+          <div class="day-chip" data-day="Mon">Mon</div><div class="day-chip" data-day="Tue">Tue</div>
+          <div class="day-chip" data-day="Wed">Wed</div><div class="day-chip" data-day="Thu">Thu</div>
+          <div class="day-chip" data-day="Fri">Fri</div><div class="day-chip" data-day="Sat">Sat</div>
+          <div class="day-chip" data-day="Sun">Sun</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Usual time</label><div class="time-wrap"><input type="time" class="time-native" id="f-time" step="1800"><div class="time-display" id="f-time-disp">--:-- --</div></div></div>
+        <div class="form-group"><label class="form-label">Duration (min)</label><input type="number" class="form-input" id="f-duration" placeholder="60" min="15" step="15"></div>
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label class="form-label">Usual time</label><div class="time-wrap"><input type="time" class="time-native" id="f-time" step="1800"><div class="time-display" id="f-time-disp">--:-- --</div></div></div>
-      <div class="form-group"><label class="form-label">Duration (min)</label><input type="number" class="form-input" id="f-duration" placeholder="60" min="15" step="15"></div>
+
+    <!-- Fees -->
+    <div class="form-section">
+      <div class="form-section-title">Fees</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Currency</label>
+          <select class="form-select" id="f-currency">
+            <option value="₹">₹ INR</option><option value="$">$ USD</option><option value="£">£ GBP</option>
+            <option value="€">€ EUR</option><option value="A$">A$ AUD</option><option value="C$">C$ CAD</option>
+            <option value="AED">AED</option><option value="S$">S$ SGD</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Per class</label><input type="number" class="form-input" id="f-class-rate" placeholder="0" min="0"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bill after every</label>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <input type="number" class="form-input" id="f-pay-cadence" placeholder="4" min="1" max="99">
+          <span style="font-size:15px;color:var(--text-3);white-space:nowrap;">classes</span>
+        </div>
+      </div>
     </div>
-    <div class="form-group"><label class="form-label">Current lesson</label><input type="text" class="form-input" id="f-lesson" placeholder="e.g. Teentaal — vilambit"></div>
-    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" placeholder="Progress, observations…"></textarea></div>
+
+    <!-- Progress -->
+    <div class="form-section">
+      <div class="form-section-title">Progress</div>
+      <div class="form-group"><label class="form-label">Current lesson</label><input type="text" class="form-input" id="f-lesson" placeholder="e.g. Teentaal — vilambit"></div>
+      <div class="form-group"><label class="form-label">Notes</label><textarea class="form-textarea" id="f-notes" placeholder="Progress, observations…"></textarea></div>
+    </div>
+
     <!-- Danger zone: only shown when editing -->
-    <div id="sf-danger-zone" style="display:none;padding:12px 0 0;border-top:1px solid var(--border);margin-top:4px;text-align:center;">
+    <div id="sf-danger-zone" style="display:none;padding:12px 0 0;border-top:1px solid var(--border);margin-top:20px;text-align:center;">
       <button class="danger-link" id="sf-delete-btn">Delete student permanently</button>
     </div>
   </div>
