@@ -476,12 +476,10 @@
     <!-- Date + time + notes (hidden until student selected in create mode) -->
     <div id="sc-fields">
       <div class="form-group"><label class="form-label">Date</label><input type="date" class="form-input" id="sc-date"></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Your time</label><input type="time" class="form-input" id="sc-time"></div>
-        <div class="form-group" id="sc-stu-time-group" style="display:none">
-          <label class="form-label" id="sc-stu-time-label">Student's time</label>
-          <div class="form-display" id="sc-stu-time">—</div>
-        </div>
+      <div class="form-group">
+        <label class="form-label" id="sc-time-label">Class time</label>
+        <input type="time" class="form-input" id="sc-time">
+        <div id="sc-stu-time" style="display:none;font-size:12px;color:var(--text-muted);margin-top:5px;padding-left:2px;"></div>
       </div>
       <div class="form-group"><label class="form-label">Notes</label><input type="text" class="form-input" id="sc-notes" placeholder="optional"></div>
       <div class="conflict-box" id="sc-conflict"></div>
@@ -1347,6 +1345,7 @@ function openScheduleSheet(studentId, simple) {
   document.getElementById('sc-student-label-group').style.display = isCreate ? 'none' : 'block';
   document.getElementById('sc-extra-fields').style.display = simple ? 'none' : 'block';
   document.getElementById('sc-fields').style.display = isCreate ? 'none' : 'block';
+  document.getElementById('sc-time-label').textContent = `Class time (${tzAbbr(guruTZ)})`;
 
   if (isCreate) {
     // populate student dropdown; fields stay hidden until student picked
@@ -1387,30 +1386,20 @@ function updateSchedulePreview() {
   const date = document.getElementById('sc-date').value;
   const time = document.getElementById('sc-time').value;
 
-  const stuTimeGroup = document.getElementById('sc-stu-time-group');
-  const stuTimeEl    = document.getElementById('sc-stu-time');
-  const stuTimeLbl   = document.getElementById('sc-stu-time-label');
-  const conflictBox  = document.getElementById('sc-conflict');
+  const stuTimeEl = document.getElementById('sc-stu-time');
+  const conflictBox = document.getElementById('sc-conflict');
 
-  // Show student time whenever a student is selected
-  if (s) {
-    const firstName = s.name.split(' ')[0];
-    stuTimeLbl.textContent = `${firstName}'s time`;
-    if (date && time) {
-      try {
-        const tz = s.timezone || guruTZ;
-        const utcISO = guruLocalToUTC(date, time);
-        const stuTime = fmtTimeInTZ(utcISO, tz);
-        const abbr = (s.timezone && s.timezone !== guruTZ) ? ` ${tzAbbr(tz)}` : '';
-        stuTimeEl.textContent = stuTime + abbr;
-        stuTimeGroup.style.display = 'block';
-      } catch { stuTimeGroup.style.display = 'none'; }
-    } else {
-      stuTimeEl.textContent = '—';
-      stuTimeGroup.style.display = 'block';
-    }
+  // Show student's local time as a hint below the time input (only if student has a different timezone)
+  if (s && s.timezone && s.timezone !== guruTZ && date && time) {
+    try {
+      const utcISO = guruLocalToUTC(date, time);
+      const stuTime = fmtTimeInTZ(utcISO, s.timezone);
+      const firstName = s.name.split(' ')[0];
+      stuTimeEl.textContent = `${firstName}'s time: ${stuTime} ${tzAbbr(s.timezone)}`;
+      stuTimeEl.style.display = 'block';
+    } catch { stuTimeEl.style.display = 'none'; }
   } else {
-    stuTimeGroup.style.display = 'none';
+    stuTimeEl.style.display = 'none';
   }
 
   // Conflict detection
