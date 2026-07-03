@@ -12,6 +12,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <style>
+    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'Uncut Sans'; src: url('./fonts/web/UncutSans-Book.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Uncut Sans'; src: url('./fonts/web/UncutSans-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Uncut Sans'; src: url('./fonts/web/UncutSans-Semibold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Uncut Sans'; src: url('./fonts/web/UncutSans-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Basically A Mono'; src: url('./fonts/web/BasicallyAMono-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Basically A Mono'; src: url('./fonts/web/BasicallyAMono-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Basically A Mono'; src: url('./fonts/web/BasicallyAMono-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #FFFFFF; --bg-subtle: #FAFAFA; --surface: #FFFFFF;
@@ -23,8 +33,12 @@
       --warning: #D97706; --warning-bg: #FFFBEB;
       --radius: 12px; --radius-sm: 8px; --radius-lg: 16px;
       --nav-h: 64px; --header-h: 52px;
+      --font-sans: 'Uncut Sans', -apple-system, system-ui, sans-serif;
+      --font-serif: 'Redaction 10', Georgia, serif;
+      --font-mono: 'Basically A Mono', 'Courier New', monospace;
     }
-    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow: hidden; touch-action: pan-x pan-y; }
+    html, body { height: 100%; font-family: var(--font-sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow: hidden; touch-action: pan-x pan-y; }
+    .tab-heading { font-family: var(--font-serif); font-size: 24px; font-weight: 700; }
     * { touch-action: inherit; }
     button, a, input, select, textarea, label, [onclick] { touch-action: manipulation; }
     #app { height: 100%; display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; position: relative; }
@@ -32,7 +46,7 @@
     /* Header */
     #header { height: var(--header-h); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--bg); z-index: 10; }
     .header-title { font-size: 17px; font-weight: 700; letter-spacing: -0.4px; display: flex; align-items: center; gap: 8px; }
-    .app-version { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+    .app-version { font-size: 11px; font-weight: 400; color: var(--text-muted); letter-spacing: 0; font-family: var(--font-mono); }
     .header-action { background: none; border: none; padding: 6px; cursor: pointer; color: var(--text-3); display: flex; align-items: center; border-radius: var(--radius-sm); }
     .header-action:hover { color: var(--text); }
 
@@ -94,7 +108,7 @@
     .day-pill.is-today:not(.active) { border-color: var(--accent); }
     .dp-label { font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--text-3); }
     .day-pill.active .dp-label { color: rgba(255,255,255,0.65); }
-    .dp-num { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 2px; }
+    .dp-num { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 2px; font-family: var(--font-mono); }
     .day-pill.active .dp-num { color: #fff; }
     .day-pill.active .cal-dot { background: rgba(255,255,255,0.65) !important; }
     .day-pill.past:not(.active) { opacity: 0.38; }
@@ -117,7 +131,7 @@
     .cal-cell.empty, .cal-cell.no-class { cursor: default; }
     .cal-cell:not(.empty):not(.no-class):active { background: var(--bg-subtle); }
     .cal-cell.selected { background: var(--bg-subtle); }
-    .cal-day { font-size: 14px; font-weight: 500; color: var(--text); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; }
+    .cal-day { font-size: 14px; font-weight: 500; color: var(--text); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; font-family: var(--font-mono); }
     .cal-cell.today .cal-day { background: var(--accent); color: var(--accent-fg); font-weight: 700; }
     .cal-cell.selected:not(.today) .cal-day { background: #E5E5E5; font-weight: 700; }
     .cal-dots { display: flex; gap: 3px; margin-top: 4px; align-items: center; justify-content: center; flex-wrap: wrap; max-width: 36px; }
@@ -137,7 +151,7 @@
     .class-slot:active { background: var(--bg-subtle); }
     .class-slot.expanded { border-color: var(--border-mid); }
     .class-slot-row { display: flex; align-items: flex-start; gap: 12px; }
-    .class-time { font-size: 13px; font-weight: 600; color: var(--text-3); min-width: 58px; padding-top: 1px; }
+    .class-time { font-size: 13px; font-weight: 600; color: var(--text-3); min-width: 58px; padding-top: 1px; font-family: var(--font-mono); }
     .class-info { flex: 1; }
     .class-student { font-size: 15px; font-weight: 600; }
     .class-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
@@ -300,7 +314,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#hdr-icon-grad)"/><defs><linearGradient id="hdr-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu<span class="app-version">v1.50</span></span>
+    <span class="header-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#hdr-icon-grad)"/><defs><linearGradient id="hdr-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu<span class="app-version">v1.51</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -309,7 +323,7 @@
   <main id="main">
     <!-- Schedule tab -->
     <div id="view-schedule" class="view active">
-      <div style="padding:20px 16px 4px;"><span style="font-size:24px;font-weight:700;">Schedule</span></div>
+      <div style="padding:20px 16px 4px;"><span class="tab-heading">Schedule</span></div>
       <div class="sched-sticky-header">
         <div class="sched-mode-bar">
           <button class="sched-mode-btn active" data-mode="week" onclick="setSchedMode('week')">Week</button>
@@ -323,7 +337,7 @@
 
     <!-- Students tab -->
     <div id="view-students" class="view">
-      <div style="padding:20px 16px 4px;"><span style="font-size:24px;font-weight:700;">Students</span></div>
+      <div style="padding:20px 16px 4px;"><span class="tab-heading">Students</span></div>
       <div class="search-wrapper">
         <div class="search-inner">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -335,7 +349,7 @@
 
     <!-- Payments tab -->
     <div id="view-payments" class="view">
-      <div style="padding:20px 16px 4px;"><span style="font-size:24px;font-weight:700;">Payments</span></div>
+      <div style="padding:20px 16px 4px;"><span class="tab-heading">Payments</span></div>
       <div id="pay-summary"></div>
       <div id="payments-list"></div>
     </div>
@@ -1510,7 +1524,7 @@ function renderDetailPayments(s) {
     statusHTML = `
       <div class="pay-status-card due">
         <div style="font-size:12px;font-weight:600;color:#92400E;text-transform:uppercase;letter-spacing:0.4px;">${label}</div>
-        <div style="font-size:26px;font-weight:700;color:#92400E;margin:4px 0;">${c}${ps.amountDue.toLocaleString()}</div>
+        <div style="font-size:26px;font-weight:700;color:#92400E;margin:4px 0;font-family:var(--font-mono);">${c}${ps.amountDue.toLocaleString()}</div>
         <div style="font-size:12px;color:#A16207;">${subMsg}</div>
         <button class="btn btn-primary" style="width:100%;margin-top:14px;" onclick="openPaySheet('${s.id}')">Mark paid</button>
       </div>`;
