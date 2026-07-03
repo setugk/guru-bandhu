@@ -190,6 +190,10 @@
     .form-input, .form-textarea { appearance: none; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
     .form-textarea { resize: vertical; min-height: 90px; }
+    .time-wrap { position: relative; }
+    .time-native { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; z-index: 2; cursor: pointer; border: none; background: none; -webkit-appearance: none; }
+    .time-display { width: 100%; border: 1px solid var(--border-mid); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 15px; font-family: inherit; background: var(--bg); color: var(--text-muted); box-sizing: border-box; min-height: 43px; }
+    .time-display.has-value { color: var(--text); }
     .form-row { display: flex; gap: 12px; }
     .form-row .form-group { flex: 1; min-width: 0; }
     .form-select { padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23737373' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; appearance: none; }
@@ -441,7 +445,7 @@
       </div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Usual time</label><input type="time" class="form-input" id="f-time"></div>
+      <div class="form-group"><label class="form-label">Usual time</label><div class="time-wrap"><input type="time" class="time-native" id="f-time" step="1800"><div class="time-display" id="f-time-disp">--:-- --</div></div></div>
       <div class="form-group"><label class="form-label">Duration (min)</label><input type="number" class="form-input" id="f-duration" placeholder="60" min="15" step="15"></div>
     </div>
     <div class="form-group"><label class="form-label">Current lesson</label><input type="text" class="form-input" id="f-lesson" placeholder="e.g. Teentaal — vilambit"></div>
@@ -605,6 +609,18 @@ function saveSettings()  { localStorage.setItem(LS_SETTINGS, JSON.stringify(sett
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 function yyyymm(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
 function guruToday() { return new Date().toLocaleString('sv-SE', { timeZone: guruTZ }).slice(0,10); }
+function fmtTimeVal(val) {
+  if (!val) return '--:-- --';
+  const [h, m] = val.split(':').map(Number);
+  return new Date(2000, 0, 1, h, m).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+function setFTime(val) {
+  document.getElementById('f-time').value = val;
+  const d = document.getElementById('f-time-disp');
+  if (!d) return;
+  d.textContent = fmtTimeVal(val);
+  d.classList.toggle('has-value', !!val);
+}
 
 function addDays(dateStr, n) {
   const [y,m,d] = dateStr.split('-').map(Number);
@@ -1476,7 +1492,8 @@ function openStudentForm(id = null) {
   editingStudentId = id;
   document.getElementById('sf-title').textContent = id ? 'Edit Student' : 'Add Student';
   populateTZSelect('f-timezone', '');
-  ['f-name','f-phone','f-email','f-lesson','f-notes','f-time'].forEach(fid=>document.getElementById(fid).value='');
+  ['f-name','f-phone','f-email','f-lesson','f-notes'].forEach(fid=>document.getElementById(fid).value='');
+  setFTime('');
   document.getElementById('f-duration').value = '60';
   document.getElementById('f-class-rate').value = '';
   document.getElementById('f-pay-cadence').value = '4';
@@ -1489,7 +1506,7 @@ function openStudentForm(id = null) {
       document.getElementById('f-name').value = s.name||'';
       document.getElementById('f-phone').value = s.phone||'';
       document.getElementById('f-email').value = s.email||'';
-      document.getElementById('f-time').value = s.classTime||'';
+      setFTime(s.classTime||'');
       document.getElementById('f-duration').value = s.classDuration||60;
       document.getElementById('f-class-rate').value = s.classRate||'';
       document.getElementById('f-pay-cadence').value = s.payEveryNClasses||4;
@@ -1822,6 +1839,11 @@ document.getElementById('sc-student-select').addEventListener('change', ()=>{
   }
   updateSchedulePreview();
 });
+
+// Usual time display in student form
+const fTimeEl = document.getElementById('f-time');
+fTimeEl.addEventListener('change', () => setFTime(fTimeEl.value));
+fTimeEl.addEventListener('input',  () => setFTime(fTimeEl.value));
 
 // Payment
 document.getElementById('ps-close').addEventListener('click', ()=>closeSheet('payment-sheet'));
