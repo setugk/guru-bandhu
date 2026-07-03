@@ -88,9 +88,8 @@
     .fab:active { box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
 
     /* Schedule */
-    .day-strip { display: flex; overflow-x: auto; gap: 8px; padding: 8px 16px 4px; scrollbar-width: none; }
-    .day-strip::-webkit-scrollbar { display: none; }
-    .day-pill { display: flex; flex-direction: column; align-items: center; padding: 8px 12px; border-radius: var(--radius); cursor: pointer; min-width: 50px; flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); transition: all 0.12s; }
+    .day-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 8px 16px 4px; }
+    .day-pill { display: flex; flex-direction: column; align-items: center; padding: 8px 4px; border-radius: var(--radius); cursor: pointer; min-width: 0; border: 1px solid var(--border); background: var(--bg); transition: all 0.12s; }
     .day-pill.active { background: var(--accent); border-color: var(--accent); }
     .day-pill.is-today:not(.active) { border-color: var(--accent); }
     .dp-label { font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--text-3); }
@@ -294,7 +293,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title">Guru Bandhu<span class="app-version">v1.19</span></span>
+    <span class="header-title">Guru Bandhu<span class="app-version">v1.20</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -866,7 +865,7 @@ function renderSchedWeek() {
       <span class="dp-num">${dayNum(d)}</span>
       ${classDots(grouped[d] || [])}
     </div>`;
-  }).join('')}<span style="flex-shrink:0;width:8px;display:inline-block;"></span></div>`;
+  }).join('')}</div>`;
 
   // Selected day content
   const selDate = days[schedWeekDay];
@@ -878,8 +877,6 @@ function renderSchedWeek() {
     : `<div class="sched-date-head${selDate === today ? ' today' : ''}">${lbl}</div><div class="empty-state" style="padding:36px 32px;"><div class="empty-icon">🥁</div><div class="empty-title">No classes</div><div class="empty-desc">Tap + to schedule a class</div></div>`;
 
   document.getElementById('schedule-list').innerHTML = strip + content;
-  const activePill = document.querySelector('#day-strip .day-pill.active');
-  if (activePill) activePill.scrollIntoView({ block: 'nearest', inline: 'nearest' });
 }
 
 function renderSchedMonth() {
