@@ -293,7 +293,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title">Guru Bandhu<span class="app-version">v1.25</span></span>
+    <span class="header-title">Guru Bandhu<span class="app-version">v1.26</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -1200,17 +1200,17 @@ function renderDetailPayments(s) {
   } else {
     const inCredit = ps.unpaid < 0;
     const barN   = inCredit ? ps.completed % ps.cadence : ps.progress;
-    const barLbl = inCredit ? `${barN} of ${ps.cadence} classes completed` : `${barN} of ${ps.cadence} classes toward next payment`;
+    const barLbl = inCredit ? `${barN} of ${ps.cadence} classes completed in current batch` : `${barN} of ${ps.cadence} classes toward next payment`;
     const pct    = ps.cadence > 0 ? Math.round(barN / ps.cadence * 100) : 0;
+    const nextAmt = `${c}${(ps.cadence * ps.rate).toLocaleString()}`;
+    const rateNote = ps.rate ? `${c}${ps.rate.toLocaleString()}/class · next payment ${nextAmt}` : '';
     statusHTML = `
       <div class="pay-status-card ok">
         <div style="font-size:12px;font-weight:600;color:var(--success);text-transform:uppercase;letter-spacing:0.4px;">Up to date</div>
-        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-3);margin:8px 0 2px;">
-          <span>${barLbl}</span>
-          <span>${c}${(barN * ps.rate).toLocaleString()} / ${c}${(ps.cadence * ps.rate).toLocaleString()}</span>
-        </div>
+        <div style="font-size:13px;color:var(--text-3);margin:8px 0 2px;">${barLbl}</div>
         <div class="progress-track"><div class="progress-fill" style="width:${pct}%;"></div></div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${ps.completed} total completed · ${ps.paidClasses} paid for</div>
+        ${rateNote ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px;">${rateNote}</div>` : ''}
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${ps.completed} total completed · ${ps.paidClasses} paid for</div>
       </div>`;
   }
 
