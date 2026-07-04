@@ -12,27 +12,37 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <style>
+    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #FFFFFF; --bg-subtle: #FAFAFA; --surface: #FFFFFF;
       --border: #E5E5E5; --border-mid: #D4D4D4;
       --text: #111111; --text-2: #525252; --text-3: #737373; --text-muted: #A3A3A3;
-      --accent: #000000; --accent-fg: #FFFFFF;
+      --accent: #A45A00; --accent-fg: #FFFFFF;
       --success: #16A34A; --success-bg: #F0FDF4;
       --danger: #DC2626; --danger-bg: #FFF1F2;
       --warning: #D97706; --warning-bg: #FFFBEB;
       --radius: 12px; --radius-sm: 8px; --radius-lg: 16px;
       --nav-h: 64px; --header-h: 52px;
+      --font-sans: 'Instrument Sans', -apple-system, system-ui, sans-serif;
+      --font-serif: 'Redaction 10', Georgia, serif;
     }
-    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow: hidden; touch-action: pan-x pan-y; }
+    html, body { height: 100%; font-family: var(--font-sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow: hidden; touch-action: pan-x pan-y; }
+    .tab-heading { font-family: var(--font-serif); font-size: 24px; font-weight: 700; }
     * { touch-action: inherit; }
     button, a, input, select, textarea, label, [onclick] { touch-action: manipulation; }
     #app { height: 100%; display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; position: relative; }
 
     /* Header */
     #header { height: var(--header-h); padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--bg); z-index: 10; }
-    .header-title { font-size: 17px; font-weight: 700; letter-spacing: -0.4px; display: flex; align-items: baseline; gap: 6px; }
-    .app-version { font-size: 11px; font-weight: 500; color: var(--text-muted); letter-spacing: 0; }
+    .header-title { font-size: 17px; font-weight: 700; letter-spacing: -0.4px; display: flex; align-items: center; gap: 8px; }
+    .app-version { font-size: 11px; font-weight: 400; color: var(--text-muted); letter-spacing: 0; font-family: var(--font-sans); }
     .header-action { background: none; border: none; padding: 6px; cursor: pointer; color: var(--text-3); display: flex; align-items: center; border-radius: var(--radius-sm); }
     .header-action:hover { color: var(--text); }
 
@@ -48,7 +58,7 @@
     .nav-btn svg { width: 22px; height: 22px; }
 
     /* Search */
-    .search-wrapper { padding: 12px 16px 4px; }
+    .search-wrapper { padding: 12px 16px 8px; }
     .search-inner { position: relative; }
     .search-input { width: 100%; height: 40px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0 14px 0 38px; font-size: 15px; color: var(--text); outline: none; appearance: none; }
     .search-input::placeholder { color: var(--text-muted); }
@@ -58,13 +68,13 @@
     .card { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; transition: background 0.1s; }
     .card:active { background: var(--bg-subtle); }
     .card.archived-card { opacity: 0.55; }
-    .card-top { display: flex; align-items: flex-start; gap: 10px; }
+    .card-top { display: flex; align-items: center; gap: 10px; }
     .card-body { flex: 1; min-width: 0; }
     .card-row1 { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
     .student-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .card-right { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
     .card-meta { font-size: 13px; color: var(--text-3); margin-top: 3px; }
-    .card-next { font-size: 13px; color: var(--text-2); margin-top: 5px; }
+    .card-next { font-size: 13px; color: var(--text-2); margin-top: 5px; font-family: var(--font-sans); }
     .card-lesson { font-size: 13px; color: var(--text-3); margin-top: 5px; padding-top: 7px; border-top: 1px solid var(--border); font-style: italic; }
     .cal-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px; display: flex; align-items: center; transition: color 0.1s; }
     .cal-btn:hover { color: var(--text-2); }
@@ -94,9 +104,11 @@
     .day-pill.is-today:not(.active) { border-color: var(--accent); }
     .dp-label { font-size: 11px; font-weight: 500; text-transform: uppercase; color: var(--text-3); }
     .day-pill.active .dp-label { color: rgba(255,255,255,0.65); }
-    .dp-num { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 2px; }
+    .dp-num { font-size: 18px; font-weight: 700; color: var(--text); margin-top: 2px; font-family: var(--font-sans); }
     .day-pill.active .dp-num { color: #fff; }
     .day-pill.active .cal-dot { background: rgba(255,255,255,0.65) !important; }
+    .day-pill.past:not(.active) { opacity: 0.38; }
+    .cal-cell.past:not(.selected):not(.today) { opacity: 0.38; }
     .sched-sticky-header { position: sticky; top: 0; z-index: 10; background: var(--bg); border-bottom: 1px solid var(--border); }
     .sched-mode-bar { display: flex; gap: 6px; padding: 12px 16px 8px; }
     .sched-mode-btn { flex: 1; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--bg); color: var(--text-3); font-family: inherit; transition: all 0.12s; }
@@ -112,10 +124,10 @@
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); padding: 4px 10px; gap: 2px; }
     .cal-head { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-muted); padding: 4px 0 8px; letter-spacing: 0.3px; }
     .cal-cell { display: flex; flex-direction: column; align-items: center; padding: 5px 2px 7px; border-radius: var(--radius-sm); min-height: 54px; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.1s; }
-    .cal-cell.empty, .cal-cell.no-class { cursor: default; }
-    .cal-cell:not(.empty):not(.no-class):active { background: var(--bg-subtle); }
+    .cal-cell.empty { cursor: default; pointer-events: none; }
+    .cal-cell:not(.empty):active { background: var(--bg-subtle); }
     .cal-cell.selected { background: var(--bg-subtle); }
-    .cal-day { font-size: 14px; font-weight: 500; color: var(--text); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; }
+    .cal-day { font-size: 14px; font-weight: 500; color: var(--text); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; font-family: var(--font-sans); }
     .cal-cell.today .cal-day { background: var(--accent); color: var(--accent-fg); font-weight: 700; }
     .cal-cell.selected:not(.today) .cal-day { background: #E5E5E5; font-weight: 700; }
     .cal-dots { display: flex; gap: 3px; margin-top: 4px; align-items: center; justify-content: center; flex-wrap: wrap; max-width: 36px; }
@@ -131,32 +143,58 @@
     .sched-status-badge.completed { color: var(--success); background: var(--success-bg); }
     .sched-status-badge.missed    { color: var(--danger);  background: var(--danger-bg);  }
 
-.class-slot { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; transition: border-color 0.15s; }
-    .class-slot:active { background: var(--bg-subtle); }
+.class-slot { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; transition: border-color 0.15s; }
     .class-slot.expanded { border-color: var(--border-mid); }
-    .class-slot-row { display: flex; align-items: flex-start; gap: 12px; }
-    .class-time { font-size: 13px; font-weight: 600; color: var(--text-3); min-width: 58px; padding-top: 1px; }
+    .class-slot-row { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; user-select: none; -webkit-user-select: none; }
+    .class-slot-row:active { opacity: 0.7; }
+    .slot-chevron { flex-shrink: 0; color: var(--text-muted); margin-top: 1px; transition: transform 0.22s ease; }
+    .class-slot.expanded .slot-chevron { transform: rotate(180deg); }
+    .class-time { font-size: 13px; font-weight: 600; color: var(--text-3); min-width: 58px; padding-top: 1px; font-family: var(--font-sans); }
     .class-info { flex: 1; }
     .class-student { font-size: 15px; font-weight: 600; }
     .class-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .class-tz { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+    .class-tz { font-size: 12px; color: var(--text-3); margin-top: 3px; font-family: var(--font-sans); }
+    /* Upcoming class card – student detail */
+    .sc-card-time { font-family: var(--font-sans); font-size: 15px; font-weight: 600; }
+    .sc-card-date { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .sc-card-stu  { font-family: var(--font-sans); font-size: 13px; color: var(--text-3); margin-top: 4px; }
+    .sc-card-note { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+    /* Past class item – student detail */
+    .ci-time { font-family: var(--font-sans); font-size: 14px; font-weight: 500; }
+    .ci-meta { font-family: var(--font-sans); font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    /* Month group header – past classes */
+    .mg-title   { font-size: 12px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+    .mg-summary { font-size: 12px; margin-top: 2px; font-family: var(--font-sans); }
+    /* Payment status card */
+    .ps-label  { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+    .ps-label.due { color: #92400E; }
+    .ps-label.ok  { color: var(--success); }
+    .ps-amount { font-family: var(--font-sans); font-size: 26px; font-weight: 700; color: #92400E; margin: 4px 0; }
+    .ps-sub    { font-family: var(--font-sans); font-size: 12px; color: #A16207; }
+    .ps-note   { font-family: var(--font-sans); font-size: 13px; color: var(--text-3); margin-top: 8px; }
+    /* Payment history item */
+    .ph-amount { font-family: var(--font-sans); font-size: 14px; font-weight: 500; }
+    .ph-meta   { font-family: var(--font-sans); font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    /* Schedule sheet student time preview */
+    .sch-stu-time { font-family: var(--font-sans); font-size: 12px; color: var(--text-muted); margin-top: 5px; padding-left: 2px; }
     .class-actions { display: flex; gap: 8px; padding-top: 12px; margin-top: 12px; border-top: 1px solid var(--border); }
-    .class-action-btn { flex: 1; padding: 11px 8px; min-height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; font-family: inherit; text-align: center; white-space: nowrap; }
+    .class-action-btn { flex: 1; padding: 11px 8px; min-height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: #F5F5F5; font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; font-family: inherit; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
     .class-action-btn:active { opacity: 0.75; }
-    .class-action-btn.action-completed { background: var(--success-bg); color: var(--success); border-color: var(--success); }
-    .class-action-btn.action-missed    { background: var(--danger-bg);  color: var(--danger);  border-color: var(--danger);  }
+    .class-action-btn.action-completed { background: #D1FAE5; color: var(--success); border-color: var(--success); }
+    .class-action-btn.action-missed    { background: #FFE4E6; color: var(--danger);  border-color: var(--danger);  }
     .class-action-btn.action-reschedule { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+    .class-action-btn.action-icon { flex: 0 0 44px; padding: 11px 0; color: var(--text-3); }
     .class-action-btn.action-profile   { flex: 0 0 auto; color: var(--text-3); padding: 11px 14px; }
 
     /* Payments */
     .pay-section-head { padding: 16px 16px 8px; }
-    .pay-section-title { font-size: 13px; font-weight: 600; color: var(--text-2); letter-spacing: 0.2px; }
+    .pay-section-title { font-size: 13px; font-weight: 600; color: var(--text-2); }
     .pay-none-label { font-size: 14px; color: var(--text-muted); padding: 4px 16px 16px; }
     .pay-card { margin: 0 16px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
     .pay-card:active { background: var(--bg-subtle); }
     .pay-card-info { flex: 1; min-width: 0; }
     .pay-student-name { font-size: 15px; font-weight: 600; }
-    .pay-amount { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+    .pay-amount { font-size: 13px; color: var(--text-3); margin-top: 2px; font-family: var(--font-sans); }
     .pay-mark-btn { background: var(--accent); color: var(--accent-fg); border: none; border-radius: var(--radius-sm); padding: 7px 12px; font-size: 13px; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap; font-family: inherit; }
     .pay-mark-btn:active { opacity: 0.8; }
     .pay-utd-toggle { width: 100%; display: flex; align-items: center; gap: 8px; background: none; border: none; border-top: 1px solid var(--border); padding: 14px 16px; font-size: 14px; font-weight: 500; color: var(--text-2); cursor: pointer; font-family: inherit; text-align: left; margin-top: 4px; }
@@ -164,8 +202,8 @@
     .pay-utd-toggle.open svg { transform: rotate(180deg); }
 
     /* Overlay & sheets */
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.22s; }
-    .overlay.visible { opacity: 1; pointer-events: all; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; display: none; pointer-events: none; }
+    .overlay.visible { display: block; pointer-events: all; }
     .sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(102%); width: 100%; max-width: 430px; background: var(--bg); border-radius: var(--radius-lg) var(--radius-lg) 0 0; z-index: 101; max-height: 92dvh; display: flex; flex-direction: column; transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
     .sheet.open { transform: translateX(-50%) translateY(0); }
     #schedule-class-sheet, #payment-sheet, #settings-sheet, #bandish-sheet { z-index: 102; }
@@ -211,8 +249,8 @@
     /* Lessons panel */
     .lessons-section-head { display: flex; justify-content: space-between; align-items: center; margin: 18px 0 10px; padding-top: 16px; border-top: 1px solid var(--border); }
     .lessons-section-title { font-size: 13px; font-weight: 600; color: var(--text-2); }
-    .past-toggle { display: flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-3); padding: 10px 0 6px; width: 100%; text-align: left; font-family: inherit; border-top: 1px solid var(--border); margin-top: 8px; }
-    .past-toggle:hover { color: var(--text-2); }
+    .past-toggle { display: flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-2); padding: 10px 0 6px; width: 100%; text-align: left; font-family: inherit; border-top: 1px solid var(--border); margin-top: 8px; }
+    .past-toggle:hover { color: var(--text); }
     .past-chevron { transition: transform 0.2s; }
     .past-chevron.open { transform: rotate(180deg); }
 
@@ -230,6 +268,10 @@
     .detail-row:last-child { border-bottom: none; }
     .detail-lbl { font-size: 13px; color: var(--text-3); flex-shrink: 0; margin-right: 16px; padding-top: 1px; }
     .detail-val { font-size: 14px; color: var(--text); text-align: right; }
+    .detail-section-head { font-size: 13px; font-weight: 600; color: var(--text-2); padding: 16px 0 10px; margin-top: 4px; border-top: 1px solid var(--border); }
+    .text-count  { color: var(--text-muted); font-weight: 400; }
+    .hint-text   { font-size: 13px; color: var(--text-muted); }
+    .dashed-cta  { width: 100%; background: none; border: 1px dashed var(--border-mid); border-radius: var(--radius-sm); padding: 11px; font-size: 13px; font-weight: 600; color: var(--text-3); cursor: pointer; font-family: inherit; text-align: center; }
     .contact-strip { display: flex; gap: 8px; margin-top: 14px; }
     .contact-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 11px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--text-2); cursor: pointer; background: none; text-decoration: none; }
     .contact-btn:active { background: var(--bg-subtle); }
@@ -237,9 +279,9 @@
     /* Buttons */
     .btn { border: none; border-radius: var(--radius-sm); padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.1s; font-family: inherit; }
     .btn:active { opacity: 0.75; }
-    .btn-primary { background: var(--accent); color: var(--accent-fg); flex: 1; }
-    .btn-secondary { background: var(--bg-subtle); color: var(--text); border: 1px solid var(--border); padding: 12px 16px; }
-    .btn-danger { background: var(--danger-bg); color: var(--danger); padding: 12px 14px; }
+    .btn-primary   { background: var(--accent); color: var(--accent-fg); flex: 1; }
+    .btn-secondary { background: #EFEFEF; color: var(--text); border: 1px solid var(--border); padding: 12px 16px; }
+    .btn-danger    { background: #FFE4E6; color: var(--danger); padding: 12px 14px; }
     .btn-ghost { background: none; border: 1px solid var(--border); color: var(--text-2); font-size: 13px; font-weight: 500; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; padding: 6px 12px; }
     .btn-ghost:hover { border-color: var(--border-mid); }
     .danger-link { background: none; border: none; color: var(--danger); font-size: 13px; cursor: pointer; padding: 0; font-family: inherit; }
@@ -248,7 +290,7 @@
     /* Settings info row */
     .info-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
     .info-row-label { font-size: 13px; color: var(--text-3); }
-    .info-row-val { font-size: 13px; color: var(--text); text-align: right; }
+    .info-row-val { font-size: 13px; color: var(--text); text-align: right; font-weight: 600; }
     .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
     .form-section { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
     .form-section-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px; }
@@ -263,12 +305,17 @@
     /* Class status buttons */
     .class-status-btns { display: flex; gap: 6px; margin-top: 8px; }
     .class-status-btn { flex: 1; padding: 7px 10px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: none; color: var(--text-3); font-family: inherit; transition: all 0.1s; }
-    .class-status-btn.completed { background: var(--success-bg); border-color: var(--success); color: var(--success); }
-    .class-status-btn.missed    { background: var(--danger-bg);  border-color: var(--danger);  color: var(--danger);  }
-    .class-status-btn.paid      { background: var(--success-bg); border-color: var(--success); color: var(--success); }
-    .class-status-btn.due       { background: var(--warning-bg); border-color: #F59E0B;        color: var(--warning); }
+    .class-status-btn.completed { background: #D1FAE5; border-color: var(--success); color: var(--success); }
+    .class-status-btn.missed    { background: #FFE4E6; border-color: var(--danger);  color: var(--danger);  }
+    .class-status-btn.paid      { background: #D1FAE5; border-color: var(--success); color: var(--success); }
+    .class-status-btn.due       { background: #FEF3C7; border-color: #F59E0B;        color: var(--warning); }
     .class-status-btn:not(.completed):not(.missed):not(.paid):not(.due):hover { border-color: var(--border-mid); color: var(--text-2); }
     .class-history-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .cc-item { display:flex; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid var(--border); cursor:pointer; font-size:15px; }
+    .cc-item:active { background:var(--bg-subtle); }
+    .cc-item-code { font-weight:600; min-width:56px; }
+    .cc-item-name { color:var(--text-2); }
+    .cc-section-head { padding:8px 16px 4px; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; background:var(--bg-subtle); }
     .class-history-item:last-child { border-bottom: none; }
 
     /* Payment status card */
@@ -293,7 +340,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title">Guru Bandhu<span class="app-version">v1.35</span></span>
+    <span class="header-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#hdr-icon-grad)"/><defs><linearGradient id="hdr-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu<span class="app-version">v1.75</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -302,6 +349,7 @@
   <main id="main">
     <!-- Schedule tab -->
     <div id="view-schedule" class="view active">
+      <div style="padding:20px 16px 4px;"><span class="tab-heading">Schedule</span></div>
       <div class="sched-sticky-header">
         <div class="sched-mode-bar">
           <button class="sched-mode-btn active" data-mode="week" onclick="setSchedMode('week')">Week</button>
@@ -315,6 +363,7 @@
 
     <!-- Students tab -->
     <div id="view-students" class="view">
+      <div style="padding:20px 16px 4px;"><span class="tab-heading">Students</span></div>
       <div class="search-wrapper">
         <div class="search-inner">
           <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -326,6 +375,7 @@
 
     <!-- Payments tab -->
     <div id="view-payments" class="view">
+      <div style="padding:20px 16px 4px;"><span class="tab-heading">Payments</span></div>
       <div id="pay-summary"></div>
       <div id="payments-list"></div>
     </div>
@@ -372,7 +422,7 @@
     <div class="page-body" style="padding-top:12px;">
       <div class="tab-panel active" id="panel-info">
         <div id="sd-info-rows"></div>
-        <div class="contact-strip" id="sd-contact-strip"></div>
+        <div id="sd-contact-strip"></div>
       </div>
       <div class="tab-panel" id="panel-classes">
         <div id="sd-upcoming-classes"></div>
@@ -389,7 +439,7 @@
         <div id="sd-bandish-active"></div>
         <button class="past-toggle" id="past-toggle-btn">
           <svg class="past-chevron" id="past-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-          Past lessons&nbsp;<span id="past-count" style="color:var(--text-muted);font-weight:400;">(0)</span>
+          Past lessons&nbsp;<span id="past-count" class="text-count">(0)</span>
         </button>
         <div id="sd-bandish-past" style="display:none;"></div>
       </div>
@@ -417,9 +467,20 @@
     <!-- Contact -->
     <div class="form-group"><label class="form-label">Name *</label><input type="text" class="form-input" id="f-name" placeholder="Full name" autocomplete="off"></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" id="f-phone" placeholder="+91 98765…"></div>
-      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="f-email" placeholder="optional"></div>
+      <div class="form-group" style="flex:0 0 auto;">
+        <label class="form-label">Country code</label>
+        <button type="button" class="form-input" id="f-phone-cc-btn" onclick="openCCPicker()" style="display:flex;align-items:center;justify-content:space-between;gap:6px;cursor:pointer;width:120px;white-space:nowrap;">
+          <span id="f-phone-cc-display">+</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <input type="hidden" id="f-phone-cc" value="">
+      </div>
+      <div class="form-group" style="flex:1;min-width:0;">
+        <label class="form-label">Phone</label>
+        <input type="tel" class="form-input" id="f-phone" placeholder="98765 43210">
+      </div>
     </div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="f-email" placeholder="optional"></div>
 
     <!-- Schedule -->
     <div class="form-section">
@@ -429,7 +490,7 @@
         <select class="form-select" id="f-timezone"><option value="">Not set</option></select>
       </div>
       <div class="form-group">
-        <label class="form-label">Class days <span style="color:var(--text-muted);font-weight:400;">(for reference)</span></label>
+        <label class="form-label">Class days <span class="text-count">(for reference)</span></label>
         <div class="day-chips" id="f-days">
           <div class="day-chip" data-day="Mon">Mon</div><div class="day-chip" data-day="Tue">Tue</div>
           <div class="day-chip" data-day="Wed">Wed</div><div class="day-chip" data-day="Thu">Thu</div>
@@ -485,6 +546,17 @@
   </div>
 </div>
 
+<!-- Country code picker overlay -->
+<div id="cc-picker-overlay" style="display:none;position:fixed;inset:0;z-index:300;background:var(--bg);flex-direction:column;">
+  <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;">
+    <button type="button" onclick="closeCCPicker()" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--text);display:flex;align-items:center;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <input type="text" id="cc-search" class="form-input" placeholder="Search country or code…" oninput="renderCCList(this.value)" style="flex:1;">
+  </div>
+  <div id="cc-list" style="overflow-y:auto;flex:1;"></div>
+</div>
+
 <!-- Schedule class sheet -->
 <div class="sheet" id="schedule-class-sheet">
   <div class="sheet-handle"></div>
@@ -499,7 +571,7 @@
       <select class="form-select" id="sc-student-select"><option value="">Select student…</option></select>
     </div>
     <div id="sc-student-label-group" style="display:none;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px;">
-      <span style="font-size:15px;font-weight:600;" id="sc-student-label"></span>
+      <span class="class-student" id="sc-student-label"></span>
     </div>
     <!-- Date + time + notes (hidden until student selected in create mode) -->
     <div id="sc-fields">
@@ -507,7 +579,7 @@
       <div class="form-group">
         <label class="form-label" id="sc-time-label">Class time</label>
         <input type="time" class="form-input" id="sc-time">
-        <div id="sc-stu-time" style="display:none;font-size:12px;color:var(--text-muted);margin-top:5px;padding-left:2px;"></div>
+        <div id="sc-stu-time" class="sch-stu-time" style="display:none;"></div>
       </div>
       <div class="form-group"><label class="form-label">Notes</label><input type="text" class="form-input" id="sc-notes" placeholder="optional"></div>
       <div class="conflict-box" id="sc-conflict"></div>
@@ -518,8 +590,7 @@
     </div>
   </div>
   <div class="sheet-footer">
-    <button class="btn btn-danger" id="sc-clear" style="display:none;">Clear</button>
-    <button class="btn btn-secondary" id="sc-cancel">Cancel</button>
+    <button class="btn btn-danger" id="sc-clear" style="display:none;">Remove class</button>
     <button class="btn btn-primary" id="sc-save">Schedule</button>
   </div>
 </div>
@@ -602,7 +673,7 @@ const TIMEZONES = [
   { label: 'Singapore (SGT)',         value: 'Asia/Singapore'      },
   { label: 'Hong Kong (HKT)',         value: 'Asia/Hong_Kong'      },
   { label: 'Tokyo (JST)',             value: 'Asia/Tokyo'          },
-  { label: 'Sydney / Melbourne',      value: 'Australia/Sydney'    },
+  { label: 'Sydney / Melbourne (AEST)',value: 'Australia/Sydney'    },
   { label: 'Auckland (NZST)',         value: 'Pacific/Auckland'    },
   { label: 'Paris / Berlin (CET)',    value: 'Europe/Paris'        },
   { label: 'Amsterdam (CET)',         value: 'Europe/Amsterdam'    },
@@ -615,6 +686,217 @@ const TIMEZONES = [
   { label: 'Colombo (IST+)',          value: 'Asia/Colombo'        },
 ];
 
+const COUNTRY_CODES_POPULAR = [
+  { name:'India',         dial:'91',   flag:'🇮🇳' },
+  { name:'United States', dial:'1',    flag:'🇺🇸' },
+  { name:'United Kingdom',dial:'44',   flag:'🇬🇧' },
+  { name:'Canada',        dial:'1',    flag:'🇨🇦' },
+  { name:'Australia',     dial:'61',   flag:'🇦🇺' },
+  { name:'Singapore',     dial:'65',   flag:'🇸🇬' },
+  { name:'UAE',           dial:'971',  flag:'🇦🇪' },
+];
+const COUNTRY_CODES_ALL = [
+  { name:'Afghanistan',       dial:'93',   flag:'🇦🇫' },
+  { name:'Albania',           dial:'355',  flag:'🇦🇱' },
+  { name:'Algeria',           dial:'213',  flag:'🇩🇿' },
+  { name:'Andorra',           dial:'376',  flag:'🇦🇩' },
+  { name:'Angola',            dial:'244',  flag:'🇦🇴' },
+  { name:'Argentina',         dial:'54',   flag:'🇦🇷' },
+  { name:'Armenia',           dial:'374',  flag:'🇦🇲' },
+  { name:'Australia',         dial:'61',   flag:'🇦🇺' },
+  { name:'Austria',           dial:'43',   flag:'🇦🇹' },
+  { name:'Azerbaijan',        dial:'994',  flag:'🇦🇿' },
+  { name:'Bahrain',           dial:'973',  flag:'🇧🇭' },
+  { name:'Bangladesh',        dial:'880',  flag:'🇧🇩' },
+  { name:'Belarus',           dial:'375',  flag:'🇧🇾' },
+  { name:'Belgium',           dial:'32',   flag:'🇧🇪' },
+  { name:'Bolivia',           dial:'591',  flag:'🇧🇴' },
+  { name:'Bosnia',            dial:'387',  flag:'🇧🇦' },
+  { name:'Brazil',            dial:'55',   flag:'🇧🇷' },
+  { name:'Brunei',            dial:'673',  flag:'🇧🇳' },
+  { name:'Bulgaria',          dial:'359',  flag:'🇧🇬' },
+  { name:'Cambodia',          dial:'855',  flag:'🇰🇭' },
+  { name:'Cameroon',          dial:'237',  flag:'🇨🇲' },
+  { name:'Canada',            dial:'1',    flag:'🇨🇦' },
+  { name:'Chile',             dial:'56',   flag:'🇨🇱' },
+  { name:'China',             dial:'86',   flag:'🇨🇳' },
+  { name:'Colombia',          dial:'57',   flag:'🇨🇴' },
+  { name:'Congo (DRC)',        dial:'243',  flag:'🇨🇩' },
+  { name:'Costa Rica',        dial:'506',  flag:'🇨🇷' },
+  { name:'Croatia',           dial:'385',  flag:'🇭🇷' },
+  { name:'Cuba',              dial:'53',   flag:'🇨🇺' },
+  { name:'Cyprus',            dial:'357',  flag:'🇨🇾' },
+  { name:'Czech Republic',    dial:'420',  flag:'🇨🇿' },
+  { name:'Denmark',           dial:'45',   flag:'🇩🇰' },
+  { name:'Dominican Republic',dial:'1809', flag:'🇩🇴' },
+  { name:'Ecuador',           dial:'593',  flag:'🇪🇨' },
+  { name:'Egypt',             dial:'20',   flag:'🇪🇬' },
+  { name:'El Salvador',       dial:'503',  flag:'🇸🇻' },
+  { name:'Estonia',           dial:'372',  flag:'🇪🇪' },
+  { name:'Ethiopia',          dial:'251',  flag:'🇪🇹' },
+  { name:'Finland',           dial:'358',  flag:'🇫🇮' },
+  { name:'France',            dial:'33',   flag:'🇫🇷' },
+  { name:'Georgia',           dial:'995',  flag:'🇬🇪' },
+  { name:'Germany',           dial:'49',   flag:'🇩🇪' },
+  { name:'Ghana',             dial:'233',  flag:'🇬🇭' },
+  { name:'Greece',            dial:'30',   flag:'🇬🇷' },
+  { name:'Guatemala',         dial:'502',  flag:'🇬🇹' },
+  { name:'Honduras',          dial:'504',  flag:'🇭🇳' },
+  { name:'Hong Kong',         dial:'852',  flag:'🇭🇰' },
+  { name:'Hungary',           dial:'36',   flag:'🇭🇺' },
+  { name:'Iceland',           dial:'354',  flag:'🇮🇸' },
+  { name:'India',             dial:'91',   flag:'🇮🇳' },
+  { name:'Indonesia',         dial:'62',   flag:'🇮🇩' },
+  { name:'Iran',              dial:'98',   flag:'🇮🇷' },
+  { name:'Iraq',              dial:'964',  flag:'🇮🇶' },
+  { name:'Ireland',           dial:'353',  flag:'🇮🇪' },
+  { name:'Israel',            dial:'972',  flag:'🇮🇱' },
+  { name:'Italy',             dial:'39',   flag:'🇮🇹' },
+  { name:'Ivory Coast',       dial:'225',  flag:'🇨🇮' },
+  { name:'Jamaica',           dial:'1876', flag:'🇯🇲' },
+  { name:'Japan',             dial:'81',   flag:'🇯🇵' },
+  { name:'Jordan',            dial:'962',  flag:'🇯🇴' },
+  { name:'Kazakhstan',        dial:'7',    flag:'🇰🇿' },
+  { name:'Kenya',             dial:'254',  flag:'🇰🇪' },
+  { name:'Kuwait',            dial:'965',  flag:'🇰🇼' },
+  { name:'Kyrgyzstan',        dial:'996',  flag:'🇰🇬' },
+  { name:'Laos',              dial:'856',  flag:'🇱🇦' },
+  { name:'Latvia',            dial:'371',  flag:'🇱🇻' },
+  { name:'Lebanon',           dial:'961',  flag:'🇱🇧' },
+  { name:'Libya',             dial:'218',  flag:'🇱🇾' },
+  { name:'Lithuania',         dial:'370',  flag:'🇱🇹' },
+  { name:'Luxembourg',        dial:'352',  flag:'🇱🇺' },
+  { name:'Macau',             dial:'853',  flag:'🇲🇴' },
+  { name:'Malaysia',          dial:'60',   flag:'🇲🇾' },
+  { name:'Maldives',          dial:'960',  flag:'🇲🇻' },
+  { name:'Malta',             dial:'356',  flag:'🇲🇹' },
+  { name:'Mexico',            dial:'52',   flag:'🇲🇽' },
+  { name:'Moldova',           dial:'373',  flag:'🇲🇩' },
+  { name:'Mongolia',          dial:'976',  flag:'🇲🇳' },
+  { name:'Morocco',           dial:'212',  flag:'🇲🇦' },
+  { name:'Mozambique',        dial:'258',  flag:'🇲🇿' },
+  { name:'Myanmar',           dial:'95',   flag:'🇲🇲' },
+  { name:'Nepal',             dial:'977',  flag:'🇳🇵' },
+  { name:'Netherlands',       dial:'31',   flag:'🇳🇱' },
+  { name:'New Zealand',       dial:'64',   flag:'🇳🇿' },
+  { name:'Nicaragua',         dial:'505',  flag:'🇳🇮' },
+  { name:'Nigeria',           dial:'234',  flag:'🇳🇬' },
+  { name:'North Korea',       dial:'850',  flag:'🇰🇵' },
+  { name:'Norway',            dial:'47',   flag:'🇳🇴' },
+  { name:'Oman',              dial:'968',  flag:'🇴🇲' },
+  { name:'Pakistan',          dial:'92',   flag:'🇵🇰' },
+  { name:'Palestine',         dial:'970',  flag:'🇵🇸' },
+  { name:'Panama',            dial:'507',  flag:'🇵🇦' },
+  { name:'Paraguay',          dial:'595',  flag:'🇵🇾' },
+  { name:'Peru',              dial:'51',   flag:'🇵🇪' },
+  { name:'Philippines',       dial:'63',   flag:'🇵🇭' },
+  { name:'Poland',            dial:'48',   flag:'🇵🇱' },
+  { name:'Portugal',          dial:'351',  flag:'🇵🇹' },
+  { name:'Qatar',             dial:'974',  flag:'🇶🇦' },
+  { name:'Romania',           dial:'40',   flag:'🇷🇴' },
+  { name:'Russia',            dial:'7',    flag:'🇷🇺' },
+  { name:'Rwanda',            dial:'250',  flag:'🇷🇼' },
+  { name:'Saudi Arabia',      dial:'966',  flag:'🇸🇦' },
+  { name:'Senegal',           dial:'221',  flag:'🇸🇳' },
+  { name:'Serbia',            dial:'381',  flag:'🇷🇸' },
+  { name:'Slovakia',          dial:'421',  flag:'🇸🇰' },
+  { name:'Slovenia',          dial:'386',  flag:'🇸🇮' },
+  { name:'Somalia',           dial:'252',  flag:'🇸🇴' },
+  { name:'South Africa',      dial:'27',   flag:'🇿🇦' },
+  { name:'South Korea',       dial:'82',   flag:'🇰🇷' },
+  { name:'Spain',             dial:'34',   flag:'🇪🇸' },
+  { name:'Sri Lanka',         dial:'94',   flag:'🇱🇰' },
+  { name:'Sudan',             dial:'249',  flag:'🇸🇩' },
+  { name:'Sweden',            dial:'46',   flag:'🇸🇪' },
+  { name:'Switzerland',       dial:'41',   flag:'🇨🇭' },
+  { name:'Syria',             dial:'963',  flag:'🇸🇾' },
+  { name:'Taiwan',            dial:'886',  flag:'🇹🇼' },
+  { name:'Tajikistan',        dial:'992',  flag:'🇹🇯' },
+  { name:'Tanzania',          dial:'255',  flag:'🇹🇿' },
+  { name:'Thailand',          dial:'66',   flag:'🇹🇭' },
+  { name:'Tunisia',           dial:'216',  flag:'🇹🇳' },
+  { name:'Turkey',            dial:'90',   flag:'🇹🇷' },
+  { name:'Turkmenistan',      dial:'993',  flag:'🇹🇲' },
+  { name:'Uganda',            dial:'256',  flag:'🇺🇬' },
+  { name:'Ukraine',           dial:'380',  flag:'🇺🇦' },
+  { name:'United Arab Emirates',dial:'971',flag:'🇦🇪' },
+  { name:'United Kingdom',    dial:'44',   flag:'🇬🇧' },
+  { name:'United States',     dial:'1',    flag:'🇺🇸' },
+  { name:'Uruguay',           dial:'598',  flag:'🇺🇾' },
+  { name:'Uzbekistan',        dial:'998',  flag:'🇺🇿' },
+  { name:'Venezuela',         dial:'58',   flag:'🇻🇪' },
+  { name:'Vietnam',           dial:'84',   flag:'🇻🇳' },
+  { name:'Yemen',             dial:'967',  flag:'🇾🇪' },
+  { name:'Zambia',            dial:'260',  flag:'🇿🇲' },
+  { name:'Zimbabwe',          dial:'263',  flag:'🇿🇼' },
+];
+
+function setCCValue(dial) {
+  document.getElementById('f-phone-cc').value = dial || '';
+  const match = dial ? [...COUNTRY_CODES_POPULAR, ...COUNTRY_CODES_ALL].find(c => c.dial === dial) : null;
+  document.getElementById('f-phone-cc-display').textContent = match ? `${match.flag} +${match.dial}` : '+';
+}
+
+function openCCPicker() {
+  document.getElementById('cc-search').value = '';
+  renderCCList('');
+  const overlay = document.getElementById('cc-picker-overlay');
+  overlay.style.display = 'flex';
+  setTimeout(() => document.getElementById('cc-search').focus(), 150);
+}
+
+function closeCCPicker() {
+  document.getElementById('cc-picker-overlay').style.display = 'none';
+}
+
+function selectCC(dial, flag) {
+  setCCValue(dial);
+  closeCCPicker();
+  document.getElementById('f-phone').focus();
+}
+
+function renderCCList(query) {
+  const q = (query || '').trim().toLowerCase().replace(/^\+/, '');
+  let html = '';
+  if (!q) {
+    html += '<div class="cc-section-head">Popular</div>';
+    html += COUNTRY_CODES_POPULAR.map(c => ccItemHTML(c)).join('');
+    html += '<div class="cc-section-head">All countries</div>';
+    html += COUNTRY_CODES_ALL.map(c => ccItemHTML(c)).join('');
+  } else {
+    const results = COUNTRY_CODES_ALL.filter(c =>
+      c.name.toLowerCase().includes(q) || c.dial.startsWith(q)
+    );
+    html = results.length
+      ? results.map(c => ccItemHTML(c)).join('')
+      : '<div style="padding:24px 16px;text-align:center;color:var(--text-muted);">No results</div>';
+  }
+  document.getElementById('cc-list').innerHTML = html;
+}
+
+function ccItemHTML(c) {
+  return `<div class="cc-item" onclick="selectCC('${c.dial}','${c.flag}')">
+    <span class="cc-item-code">${c.flag} +${c.dial}</span>
+    <span class="cc-item-name">${c.name}</span>
+  </div>`;
+}
+
+function parsePhoneCC(phone) {
+  if (!phone || !phone.startsWith('+')) return { dial: '', local: phone || '' };
+  const raw = phone.slice(1).replace(/\s/g, '');
+  const allDials = [...COUNTRY_CODES_POPULAR, ...COUNTRY_CODES_ALL]
+    .map(c => c.dial)
+    .filter((d, i, a) => a.indexOf(d) === i)
+    .sort((a, b) => b.length - a.length);
+  for (const dial of allDials) {
+    if (raw.startsWith(dial)) {
+      const local = phone.slice(1 + dial.length).trim();
+      return { dial, local };
+    }
+  }
+  return { dial: '', local: phone };
+}
+
 // ── State ──────────────────────────────────────────────────────────────────
 let students = [], settings = { teacherName: '' }, guruTZ = 'Asia/Kolkata';
 let editingStudentId = null, viewingStudentId = null;
@@ -624,14 +906,19 @@ let currentTab = 'schedule';
 let schedMode = 'week', schedWeekOffset = 0, schedWeekDay = 0, schedMonthOffset = 0;
 let schedExpandedKey = null, schedCalDate = null;
 let payStudentId = null, payEditingId = null;
+let editingScheduleClassId = null;
 let showArchived = false, pastLessonsOpen = false, payUpToDateOpen = false;
 
 // ── Persistence ────────────────────────────────────────────────────────────
 function load() {
   try { students = JSON.parse(localStorage.getItem(LS_STUDENTS)) || []; } catch { students = []; }
   try { settings = { teacherName: '', weekStartDay: 0, ...JSON.parse(localStorage.getItem(LS_SETTINGS)) }; } catch {}
-  // migrate: ensure every payment has an id (old records may be missing one)
-  students.forEach(s => (s.payments||[]).forEach(p => { if (!p.id) p.id = uid(); }));
+  // migrate: nextClass (single) → scheduledClasses (array)
+  students.forEach(s => {
+    if (!s.scheduledClasses) s.scheduledClasses = [];
+    if (s.nextClass) { s.scheduledClasses.push({ id: uid(), ...s.nextClass }); delete s.nextClass; }
+    (s.payments||[]).forEach(p => { if (!p.id) p.id = uid(); });
+  });
 }
 function saveStudents() { localStorage.setItem(LS_STUDENTS, JSON.stringify(students)); }
 function saveSettings()  { localStorage.setItem(LS_SETTINGS, JSON.stringify(settings)); }
@@ -676,7 +963,25 @@ function fmtTimeInTZ(utcISO, tz) {
   try { return new Date(utcISO).toLocaleTimeString('en-US', { timeZone: tz, hour: 'numeric', minute: '2-digit', hour12: true }); }
   catch { return ''; }
 }
+const TZ_ABBR_OVERRIDE = {
+  'Asia/Kolkata':        'IST',
+  'Asia/Colombo':        'IST',
+  'Asia/Karachi':        'PKT',
+  'Asia/Dhaka':          'BST',
+  'Asia/Kathmandu':      'NPT',
+  'Asia/Kabul':          'AFT',
+  'Asia/Rangoon':        'MMT',
+  'Asia/Yangon':         'MMT',
+  'Asia/Pyongyang':      'KST',
+  'Asia/Riyadh':         'AST',
+  'Asia/Tehran':         'IRST',
+  'Africa/Nairobi':      'EAT',
+  'Africa/Johannesburg': 'SAST',
+  'Pacific/Marquesas':   'MART',
+  'Pacific/Chatham':     'CHAST',
+};
 function tzAbbr(tz) {
+  if (TZ_ABBR_OVERRIDE[tz]) return TZ_ABBR_OVERRIDE[tz];
   try { return new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'short'}).formatToParts(new Date()).find(p=>p.type==='timeZoneName')?.value||tz; }
   catch { return tz; }
 }
@@ -706,20 +1011,28 @@ function getPaymentStatus(s) {
 }
 
 function classesOnDate(dateStr) {
-  return students
-    .filter(s => !s.archived && s.nextClass && utcToGuruDateStr(s.nextClass.utcISO) === dateStr)
-    .sort((a,b) => new Date(a.nextClass.utcISO) - new Date(b.nextClass.utcISO));
+  const result = [];
+  students.filter(s => !s.archived).forEach(s => {
+    (s.scheduledClasses||[]).forEach(c => {
+      if (utcToGuruDateStr(c.utcISO) === dateStr) result.push({ s, c });
+    });
+  });
+  return result.sort((a,b) => new Date(a.c.utcISO) - new Date(b.c.utcISO)).map(x => x.s);
 }
 
-function checkConflict(skipStudentId, utcISO, duration) {
+function checkConflict(skipStudentId, utcISO, duration, skipClassId = null) {
   const startMs = new Date(utcISO).getTime();
   const endMs = startMs + (duration||60) * 60000;
-  return students.filter(s => {
-    if (s.id === skipStudentId || !s.nextClass || s.archived) return false;
-    const sStart = new Date(s.nextClass.utcISO).getTime();
-    const sEnd = sStart + (s.nextClass.duration||60) * 60000;
-    return startMs < sEnd && endMs > sStart;
+  const conflicts = [];
+  students.filter(s => s.id !== skipStudentId && !s.archived).forEach(s => {
+    (s.scheduledClasses||[]).forEach(c => {
+      if (c.id === skipClassId) return;
+      const sStart = new Date(c.utcISO).getTime();
+      const sEnd = sStart + (c.duration||60) * 60000;
+      if (startMs < sEnd && endMs > sStart) conflicts.push({ name: s.name, utcISO: c.utcISO });
+    });
   });
+  return conflicts;
 }
 
 function populateTZSelect(selectId, selected) {
@@ -749,10 +1062,10 @@ function getAllClassEvents() {
     (s.classHistory||[]).forEach(c => {
       events.push({ utcISO: c.utcISO, student: s, duration: c.duration||60, notes: c.notes||'', status: c.status, isPast: true, isHistory: true, histId: c.id });
     });
-    if (s.nextClass) {
-      const isPast = new Date(s.nextClass.utcISO) < now;
-      events.push({ utcISO: s.nextClass.utcISO, student: s, duration: s.nextClass.duration||60, notes: s.nextClass.notes||'', status: null, isPast, isHistory: false });
-    }
+    (s.scheduledClasses||[]).forEach(c => {
+      const isPast = new Date(c.utcISO) < now;
+      events.push({ utcISO: c.utcISO, student: s, duration: c.duration||60, notes: c.notes||'', status: null, isPast, isHistory: false, scId: c.id });
+    });
   });
   return events.sort((a, b) => new Date(a.utcISO) - new Date(b.utcISO));
 }
@@ -769,8 +1082,8 @@ function groupByDate(events) {
 
 function schedClassCardHTML(e, today) {
   const s = e.student;
-  const guruTime = fmtTimeInTZ(e.utcISO, guruTZ);
-  const stuLine  = s.timezone ? `<div class="class-tz">${esc(s.name.split(' ')[0])}: ${fmtTimeInTZ(e.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>` : '';
+  const guruTime = `${fmtTimeInTZ(e.utcISO, guruTZ)} ${tzAbbr(guruTZ)}`;
+  const stuLine  = s.timezone ? `<div class="class-tz">${esc(s.name.split(' ')[0])}'s time: ${fmtTimeInTZ(e.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>` : '';
   const noteLine = e.notes ? ` · ${esc(e.notes)}` : '';
   let badge = '';
   if (e.isPast && e.status) {
@@ -780,14 +1093,14 @@ function schedClassCardHTML(e, today) {
   }
   const key = `${s.id}-${e.utcISO}`;
   return `<div class="class-slot"
-    onclick="toggleSchedCard(this)"
     data-key="${key}"
     data-sid="${s.id}"
     data-utc="${e.utcISO}"
     data-is-history="${e.isHistory}"
     data-hist-id="${e.histId||''}"
+    data-sc-id="${e.scId||''}"
     data-status="${e.status||''}">
-    <div class="class-slot-row">
+    <div class="class-slot-row" onclick="toggleSchedCard(this.closest('.class-slot'))">
       <div class="class-time">${guruTime}</div>
       <div class="class-info">
         <div class="class-student">${esc(s.name)}</div>
@@ -795,6 +1108,7 @@ function schedClassCardHTML(e, today) {
         ${stuLine}
       </div>
       ${badge}
+      <svg class="slot-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
     </div>
   </div>`;
 }
@@ -863,6 +1177,10 @@ function renderSchedList(scrollToDate) {
   });
 }
 
+function getSchedSelectedDate() {
+  if (schedMode === 'month' && schedCalDate) return schedCalDate;
+  return addDays(currentWeekStart(), schedWeekOffset * 7 + schedWeekDay);
+}
 function currentWeekStart() {
   const today = guruToday();
   const wsd = settings.weekStartDay ?? 0;
@@ -894,7 +1212,8 @@ function renderSchedWeek() {
   // Pill strip — trailing <span> fixes Safari right-padding clipping in overflow containers
   const strip = `<div class="day-strip" id="day-strip">${days.map((d, i) => {
     const isToday = d === today;
-    return `<div class="day-pill${i === schedWeekDay ? ' active' : ''}${isToday && i !== schedWeekDay ? ' is-today' : ''}" onclick="schedWeekDay=${i};renderSchedule()">
+    const isPast  = d < today;
+    return `<div class="day-pill${i === schedWeekDay ? ' active' : ''}${isToday && i !== schedWeekDay ? ' is-today' : ''}${isPast ? ' past' : ''}" onclick="schedWeekDay=${i};renderSchedule()">
       <span class="dp-label">${dayLabel(d)}</span>
       <span class="dp-num">${dayNum(d)}</span>
       ${classDots(grouped[d] || [])}
@@ -906,9 +1225,28 @@ function renderSchedWeek() {
   const evts    = (grouped[selDate] || []).slice().sort((a, b) => new Date(a.utcISO) - new Date(b.utcISO));
   const lbl     = selDate === today ? 'Today' : selDate === addDays(today, 1) ? 'Tomorrow'
     : new Date(selDate + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  const content = evts.length
-    ? `<div class="sched-date-head${selDate === today ? ' today' : ''}">${lbl}</div>${evts.map(e => schedClassCardHTML(e, today)).join('')}`
-    : `<div class="sched-date-head${selDate === today ? ' today' : ''}">${lbl}</div><div class="empty-state" style="padding:36px 32px;"><div class="empty-icon">🥁</div><div class="empty-title">No classes</div><div class="empty-desc">Tap + to schedule a class</div></div>`;
+
+  let content;
+  if (evts.length) {
+    content = `<div class="sched-date-head${selDate === today ? ' today' : ''}">${lbl}</div>${evts.map(e => schedClassCardHTML(e, today)).join('')}`;
+  } else {
+    const futureDates = Object.keys(grouped)
+      .filter(d => d > selDate && (grouped[d]||[]).some(e => !e.isHistory && !e.isPast))
+      .sort();
+    let hint;
+    if (futureDates.length) {
+      const nd     = futureDates[0];
+      const ndEvts = (grouped[nd]||[]).filter(e => !e.isHistory && !e.isPast);
+      const ndFmt  = nd === today ? 'today' : nd === addDays(today, 1) ? 'tomorrow'
+        : new Date(nd + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+      hint = ndEvts.length === 1
+        ? `Next class: ${ndFmt} with ${esc(ndEvts[0].student.name)}`
+        : `Next: ${ndFmt} · ${ndEvts.length} classes`;
+    } else {
+      hint = 'No classes scheduled in the future';
+    }
+    content = `<div class="sched-date-head${selDate === today ? ' today' : ''}">${lbl}</div><div class="empty-state" style="padding:36px 32px;"><div class="empty-icon">🥁</div><div class="empty-title">No classes</div><div class="empty-desc">${hint}</div></div>`;
+  }
 
   document.getElementById('schedule-list').innerHTML = strip + content;
 }
@@ -952,28 +1290,45 @@ function renderSchedMonth() {
     const isToday  = dateStr === today;
     const isSel    = dateStr === schedCalDate;
     const hasCls   = dayEvts.length > 0;
-    const cls = ['cal-cell', isToday && 'today', isSel && 'selected', !hasCls && 'no-class'].filter(Boolean).join(' ');
-    html += `<div class="${cls}"${hasCls ? ` onclick="selectCalDate('${dateStr}')"` : ''}>
+    const isPast   = dateStr < today;
+    const cls = ['cal-cell', isToday && 'today', isSel && 'selected', !hasCls && 'no-class', isPast && 'past'].filter(Boolean).join(' ');
+    html += `<div class="${cls}" onclick="selectCalDate('${dateStr}')">
       <div class="cal-day">${day}</div>${cellDotsHTML(dayEvts)}</div>`;
   }
   html += `</div>`;
 
   // Day detail below grid
-  if (schedCalDate && groups[schedCalDate]) {
+  if (schedCalDate) {
     const d = new Date(schedCalDate + 'T12:00:00Z');
     const lbl = schedCalDate === today ? 'Today'
       : schedCalDate === addDays(today, 1) ? 'Tomorrow'
       : schedCalDate === addDays(today, -1) ? 'Yesterday'
       : d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-    const sorted = groups[schedCalDate].slice().sort((a, b) => new Date(a.utcISO) - new Date(b.utcISO));
-    html += `<div class="cal-detail-head${schedCalDate === today ? ' today' : ''}">${lbl}</div>
-      ${sorted.map(e => schedClassCardHTML(e, today)).join('')}`;
+    const headCls = `cal-detail-head${schedCalDate === today ? ' today' : ''}`;
+    if (groups[schedCalDate]) {
+      const sorted = groups[schedCalDate].slice().sort((a, b) => new Date(a.utcISO) - new Date(b.utcISO));
+      html += `<div class="${headCls}">${lbl}</div>${sorted.map(e => schedClassCardHTML(e, today)).join('')}`;
+    } else {
+      const allEvts = getAllClassEvents();
+      const futureDates = [...new Set(allEvts.filter(e => !e.isHistory && !e.isPast && utcToGuruDateStr(e.utcISO) > schedCalDate).map(e => utcToGuruDateStr(e.utcISO)))].sort();
+      let hint;
+      if (futureDates.length) {
+        const nd = futureDates[0];
+        const ndEvts = allEvts.filter(e => !e.isHistory && !e.isPast && utcToGuruDateStr(e.utcISO) === nd);
+        const ndFmt = nd === today ? 'today' : nd === addDays(today, 1) ? 'tomorrow'
+          : new Date(nd + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+        hint = ndEvts.length === 1 ? `Next class: ${ndFmt} with ${esc(ndEvts[0].student.name)}` : `Next: ${ndFmt} · ${ndEvts.length} classes`;
+      } else {
+        hint = 'No classes scheduled in the future';
+      }
+      html += `<div class="${headCls}">${lbl}</div><div class="empty-state" style="padding:36px 32px;"><div class="empty-icon">🥁</div><div class="empty-title">No classes</div><div class="empty-desc">${hint}</div></div>`;
+    }
   }
 
   const listEl = document.getElementById('schedule-list');
   listEl.innerHTML = html;
 
-  if (schedCalDate && groups[schedCalDate]) {
+  if (schedCalDate) {
     requestAnimationFrame(() => {
       const el = listEl.querySelector('.cal-detail-head');
       if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -1011,8 +1366,9 @@ function renderStudents(q = '') {
 
 function studentCardHTML(s, isArchived = false) {
   const badge = isArchived ? `<div class="card-right"><span class="badge badge-none">Archived</span></div>` : '';
-  const nextLine = !isArchived && s.nextClass
-    ? `<div class="card-next">Next: ${fmtTimeInTZ(s.nextClass.utcISO,guruTZ)} · ${new Date(s.nextClass.utcISO).toLocaleDateString('en-US',{timeZone:guruTZ,weekday:'short',month:'short',day:'numeric'})}</div>`
+  const nextSc = !isArchived ? (s.scheduledClasses||[]).filter(c=>new Date(c.utcISO)>=new Date()).sort((a,b)=>new Date(a.utcISO)-new Date(b.utcISO))[0] : null;
+  const nextLine = nextSc
+    ? `<div class="card-next">Next: ${fmtTimeInTZ(nextSc.utcISO,guruTZ)} · ${new Date(nextSc.utcISO).toLocaleDateString('en-US',{timeZone:guruTZ,weekday:'short',month:'short',day:'numeric'})}</div>`
     : '';
   const lessonLine = s.currentLesson ? `<div class="card-lesson">${esc(s.currentLesson)}</div>` : '';
   return `
@@ -1073,7 +1429,7 @@ function renderPayments() {
     html += `
       <button class="pay-utd-toggle${payUpToDateOpen ? ' open' : ''}" onclick="togglePayUpToDate()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-        Completed payment <span style="color:var(--text-muted);font-weight:400;margin-left:4px;">(${okStudents.length})</span>
+        Completed payment <span class="text-count" style="margin-left:4px;">(${okStudents.length})</span>
       </button>`;
     if (payUpToDateOpen) {
       html += okStudents.map(s => {
@@ -1108,8 +1464,9 @@ function openDetail(id) {
 
   const c = studentCurrency(s);
   const tzLbl = s.timezone ? (TIMEZONES.find(t=>t.value===s.timezone)?.label || s.timezone) : '—';
-  const nextStr = s.nextClass
-    ? `${fmtTimeInTZ(s.nextClass.utcISO,guruTZ)} · ${new Date(s.nextClass.utcISO).toLocaleDateString('en-US',{timeZone:guruTZ,weekday:'short',month:'short',day:'numeric'})}`
+  const _nextSc = (s.scheduledClasses||[]).filter(c=>new Date(c.utcISO)>=new Date()).sort((a,b)=>new Date(a.utcISO)-new Date(b.utcISO))[0];
+  const nextStr = _nextSc
+    ? `${fmtTimeInTZ(_nextSc.utcISO,guruTZ)} · ${new Date(_nextSc.utcISO).toLocaleDateString('en-US',{timeZone:guruTZ,weekday:'short',month:'short',day:'numeric'})}`
     : '—';
 
   document.getElementById('sd-info-rows').innerHTML = `
@@ -1121,19 +1478,21 @@ function openDetail(id) {
 
   const phone = (s.phone||'').replace(/[\s\-()]/g,'');
   const waNum = phone.replace('+','');
-  document.getElementById('sd-contact-strip').innerHTML = phone ? `
-    <a href="whatsapp://call?phone=${waNum}" class="contact-btn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 1 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 1 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      Call
-    </a>
-    <a href="whatsapp://call?phone=${waNum}&video=1" class="contact-btn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>
-      Video
-    </a>
-    <a href="https://wa.me/${waNum}" target="_blank" class="contact-btn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Chat
-    </a>` : '';
+  document.getElementById('sd-contact-strip').innerHTML = `
+    <div class="detail-section-head">Contact</div>
+    ${phone ? `<div class="contact-strip" style="margin-top:0;">
+      <a href="whatsapp://call?phone=${waNum}" class="contact-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.05 12.05 0 0 1 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.05 12.05 0 0 1 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call
+      </a>
+      <a href="whatsapp://call?phone=${waNum}&video=1" class="contact-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>Video
+      </a>
+      <a href="https://wa.me/${waNum}" target="_blank" class="contact-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chat
+      </a>
+    </div>`
+    : `<button class="dashed-cta" onclick="openStudentForm('${id}')">+ Add phone number</button>`
+    }`;
 
   document.getElementById('sd-lesson').value = s.currentLesson||'';
   document.getElementById('sd-notes').value = s.notes||'';
@@ -1153,7 +1512,7 @@ function renderLessonsPanel(s) {
 
   document.getElementById('sd-bandish-active').innerHTML = active.length
     ? active.map(c=>bandishItemHTML(s.id,c)).join('')
-    : `<p style="color:var(--text-muted);font-size:13px;padding:6px 0 10px;">No active compositions.</p>`;
+    : `<p class="hint-text" style="padding:6px 0 10px;">No active compositions.</p>`;
 
   document.getElementById('past-count').textContent = `(${past.length})`;
   document.getElementById('sd-bandish-past').innerHTML = past.length ? past.map(c=>bandishItemHTML(s.id,c)).join('') : '';
@@ -1192,7 +1551,7 @@ function renderDetailPayments(s) {
 
   let statusHTML;
   if (!ps.rate) {
-    statusHTML = `<div class="pay-status-card na"><p style="font-size:13px;color:var(--text-3);">No fees set — edit student profile to add a per-class fee and payment cadence.</p></div>`;
+    statusHTML = `<div class="pay-status-card na"><p class="hint-text">No fees set — edit student profile to add a per-class fee and payment cadence.</p></div>`;
   } else if (ps.dollarBalance > 0) {
     let label, subMsg;
     if (ps.isPastDue) {
@@ -1211,9 +1570,9 @@ function renderDetailPayments(s) {
     }
     statusHTML = `
       <div class="pay-status-card due">
-        <div style="font-size:12px;font-weight:600;color:#92400E;text-transform:uppercase;letter-spacing:0.4px;">${label}</div>
-        <div style="font-size:26px;font-weight:700;color:#92400E;margin:4px 0;">${c}${ps.amountDue.toLocaleString()}</div>
-        <div style="font-size:12px;color:#A16207;">${subMsg}</div>
+        <div class="ps-label due">${label}</div>
+        <div class="ps-amount">${c}${ps.amountDue.toLocaleString()}</div>
+        <div class="ps-sub">${subMsg}</div>
         <button class="btn btn-primary" style="width:100%;margin-top:14px;" onclick="openPaySheet('${s.id}')">Mark paid</button>
       </div>`;
   } else {
@@ -1223,8 +1582,8 @@ function renderDetailPayments(s) {
       : `${ps.completed} completed · ${c}${ps.totalCollected.toLocaleString()} received`;
     statusHTML = `
       <div class="pay-status-card ok">
-        <div style="font-size:12px;font-weight:600;color:var(--success);text-transform:uppercase;letter-spacing:0.4px;">No balance due</div>
-        <div style="font-size:13px;color:var(--text-3);margin-top:8px;">${note}</div>
+        <div class="ps-label ok">No balance due</div>
+        <div class="ps-note">${note}</div>
       </div>`;
   }
 
@@ -1237,8 +1596,8 @@ function renderDetailPayments(s) {
         return `<div class="class-history-item">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;">
             <div>
-              <div style="font-size:14px;font-weight:500;">${pCurr}${(p.amount||0).toLocaleString()}</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${p.classesCount||0} class${(p.classesCount||0)!==1?'es':''} · ${p.paidDate ? fmtDate(p.paidDate) : '—'}</div>
+              <div class="ph-amount">${pCurr}${(p.amount||0).toLocaleString()}</div>
+              <div class="ph-meta">${p.classesCount||0} class${(p.classesCount||0)!==1?'es':''} · ${p.paidDate ? fmtDate(p.paidDate) : '—'}</div>
             </div>
             <div style="display:flex;gap:4px;">
               <button class="sheet-hdr-btn" onclick="openPaySheet('${s.id}','${p.id}')" title="Edit payment">
@@ -1255,7 +1614,7 @@ function renderDetailPayments(s) {
           </div>
         </div>`;
       }).join('')
-    : `<p style="font-size:13px;color:var(--text-muted);padding:6px 0;">No payments recorded yet.</p>`;
+    : `<p class="hint-text" style="padding:6px 0;">No payments recorded yet.</p>`;
 
   el.innerHTML = statusHTML + historyHTML;
 }
@@ -1266,35 +1625,39 @@ function renderClassesPanel(s) {
   const historyEl  = document.getElementById('sd-class-history');
   const now = new Date();
 
-  // Upcoming section: only future nextClass
-  if (s.nextClass && new Date(s.nextClass.utcISO) >= now) {
-    const guruTime  = `${fmtTimeInTZ(s.nextClass.utcISO, guruTZ)} ${tzAbbr(guruTZ)}`;
-    const dateStr   = new Date(s.nextClass.utcISO).toLocaleDateString('en-US', { timeZone: guruTZ, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-    const stuLine   = s.timezone ? `<div style="font-size:13px;color:var(--text-3);margin-top:4px;">Student's local time: ${fmtTimeInTZ(s.nextClass.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>` : '';
-    const notesLine = s.nextClass.notes ? `<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">${esc(s.nextClass.notes)}</div>` : '';
-    upcomingEl.innerHTML = `
-      <div class="lessons-section-head" style="margin-top:0;"><span class="lessons-section-title">Upcoming</span></div>
-      <div style="background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;">
+  // Upcoming section: all future scheduledClasses sorted
+  const upcomingClasses = (s.scheduledClasses||[])
+    .filter(c => new Date(c.utcISO) >= now)
+    .sort((a,b) => new Date(a.utcISO) - new Date(b.utcISO));
+  if (upcomingClasses.length) {
+    const cards = upcomingClasses.map(c => {
+      const guruTime  = `${fmtTimeInTZ(c.utcISO, guruTZ)} ${tzAbbr(guruTZ)}`;
+      const dateStr   = new Date(c.utcISO).toLocaleDateString('en-US', { timeZone: guruTZ, weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      const stuLine   = s.timezone ? `<div class="sc-card-stu">Student's local time: ${fmtTimeInTZ(c.utcISO, s.timezone)} ${tzAbbr(s.timezone)}</div>` : '';
+      const notesLine = c.notes ? `<div class="sc-card-note">${esc(c.notes)}</div>` : '';
+      return `<div style="background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:8px;">
         <div style="flex:1;min-width:0;">
-          <div style="font-size:15px;font-weight:600;">${guruTime}</div>
-          <div style="font-size:13px;color:var(--text-3);margin-top:2px;">${dateStr} · ${s.nextClass.duration||60} min</div>
+          <div class="sc-card-time">${guruTime}</div>
+          <div class="sc-card-date">${dateStr} · ${c.duration||60} min</div>
           ${stuLine}${notesLine}
         </div>
-        <button onclick="openScheduleSheet('${s.id}',false)" title="Edit" style="flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--text-muted);cursor:pointer;border-radius:50%;-webkit-tap-highlight-color:transparent;touch-action:manipulation;" onmouseenter="this.style.background='var(--bg-hover)'" onmouseleave="this.style.background='none'">
+        <button onclick="openScheduleSheet('${s.id}',false,'${c.id}')" title="Edit" style="flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;color:var(--text-muted);cursor:pointer;border-radius:50%;-webkit-tap-highlight-color:transparent;touch-action:manipulation;" onmouseenter="this.style.background='var(--bg-hover)'" onmouseleave="this.style.background='none'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
       </div>`;
+    }).join('');
+    upcomingEl.innerHTML = `<div class="lessons-section-head" style="margin-top:0;"><span class="lessons-section-title">Upcoming</span></div>${cards}`;
   } else {
     upcomingEl.innerHTML = `
       <div class="lessons-section-head" style="margin-top:0;"><span class="lessons-section-title">Upcoming</span></div>
       <div style="text-align:center;padding:20px 0 10px;color:var(--text-muted);font-size:14px;">No upcoming class scheduled</div>`;
   }
 
-  // Past classes: classHistory + any past nextClass, newest first
-  const pastItems = (s.classHistory||[]).map(c => ({ ...c, _isNext: false }));
-  if (s.nextClass && new Date(s.nextClass.utcISO) < now) {
-    pastItems.push({ ...s.nextClass, _isNext: true });
-  }
+  // Past classes: classHistory + any past scheduledClasses (unprocessed), newest first
+  const pastItems = (s.classHistory||[]).map(c => ({ ...c, _isScheduled: false }));
+  (s.scheduledClasses||[]).filter(c => new Date(c.utcISO) < now).forEach(c => {
+    pastItems.push({ ...c, _isScheduled: true });
+  });
   pastItems.sort((a, b) => new Date(b.utcISO) - new Date(a.utcISO));
 
   const completedCount = pastItems.filter(c => c.status === 'completed').length;
@@ -1304,51 +1667,82 @@ function renderClassesPanel(s) {
   if (missedCount)    summaryParts.push(`<span style="color:var(--danger,#ef4444)">${missedCount} missed</span>`);
   const summarySuffix  = summaryParts.length ? ` <span style="font-weight:400;font-size:11px;color:var(--text-muted);">· ${summaryParts.join(' · ')}</span>` : '';
 
-  historyEl.innerHTML = `<div class="lessons-section-head"><span class="lessons-section-title">Past classes${summarySuffix}</span></div>`;
-
   if (!pastItems.length) {
-    historyEl.innerHTML += `<p style="color:var(--text-muted);font-size:13px;padding:6px 0;">No past classes recorded yet.</p>`;
+    historyEl.innerHTML = `<div class="lessons-section-head"><span class="lessons-section-title">Past classes</span></div><p class="hint-text" style="padding:6px 0;">No past classes recorded yet.</p>`;
     return;
   }
 
-  historyEl.innerHTML += pastItems.map(c => {
-    const guruTime = fmtTimeInTZ(c.utcISO, guruTZ);
-    const dateStr  = new Date(c.utcISO).toLocaleDateString('en-US', { timeZone: guruTZ, weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-    const stuLine  = s.timezone ? `<br>${fmtTimeInTZ(c.utcISO, s.timezone)} ${tzAbbr(s.timezone)}` : '';
-    const noteLine = c.notes ? ` · ${esc(c.notes)}` : '';
-    const statusCls    = c.status || '';
-    const otherStatus  = c.status === 'completed' ? 'missed' : 'completed';
-    const otherLabel   = c.status === 'completed' ? '✗ Missed' : '✓ Completed';
-    const markFn       = c._isNext ? `markNextClass` : `markHistoryClass`;
-    const markArgs     = c._isNext ? `'${s.id}','completed'` : `'${s.id}','${c.id}','completed'`;
-    const markArgsAlt  = c._isNext ? `'${s.id}','missed'`    : `'${s.id}','${c.id}','missed'`;
-    const markArgsOther = c._isNext
-      ? `'${s.id}','${otherStatus}'`
-      : `'${s.id}','${c.id}','${otherStatus}'`;
-    const cmpCls = c.status === 'completed' ? ' completed' : '';
-    const misCls = c.status === 'missed'    ? ' missed'    : '';
-    const cmpClick = c.status === 'completed' ? `markHistoryClass('${s.id}','${c.id}',null)` : `${markFn}(${markArgs})`;
-    const misClick = c.status === 'missed'    ? `markHistoryClass('${s.id}','${c.id}',null)` : `${markFn}(${markArgsAlt})`;
-    const statusBtns = `<div class="class-status-btns">
-      <button class="class-status-btn${cmpCls}" onclick="${cmpClick}">✓ Completed</button>
-      <button class="class-status-btn${misCls}" onclick="${misClick}">✗ Missed</button>
-    </div>`;
-    return `<div class="class-history-item">
-      <div>
-        <div style="font-size:14px;font-weight:500;">${guruTime}</div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${dateStr} · ${c.duration||60} min${noteLine}${stuLine}</div>
+  // Group by month (YYYY-MM), newest month first
+  const byMonth = {}, monthOrder = [];
+  pastItems.forEach(c => {
+    const ym = new Date(c.utcISO).toLocaleString('sv-SE', { timeZone: guruTZ }).slice(0, 7);
+    if (!byMonth[ym]) { byMonth[ym] = []; monthOrder.push(ym); }
+    byMonth[ym].push(c);
+  });
+
+  const groupsHTML = monthOrder.map(ym => {
+    const items = byMonth[ym];
+    const mc = items.filter(c => c.status === 'completed').length;
+    const mm = items.filter(c => c.status === 'missed').length;
+    const mLabel = new Date(ym + '-15T12:00:00Z').toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const mParts = [];
+    if (mc) mParts.push(`<span style="color:var(--success)">${mc} completed</span>`);
+    if (mm) mParts.push(`<span style="color:var(--danger,#ef4444)">${mm} missed</span>`);
+    const mSummary = mParts.length ? mParts.join(' · ') : `${items.length} class${items.length!==1?'es':''}`;
+    return `
+      <div onclick="toggleMonthGroup('${ym}')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--border);-webkit-tap-highlight-color:transparent;">
+        <div>
+          <div class="mg-title">${mLabel}</div>
+          <div class="mg-summary">${mSummary}</div>
+        </div>
+        <svg id="mc-${ym}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--text-muted);transition:transform 0.2s;"><path d="m6 9 6 6 6-6"/></svg>
       </div>
-      ${statusBtns}
-    </div>`;
+      <div id="mg-${ym}" style="display:none;">${items.map(c => renderClassItem(s, c)).join('')}</div>`;
   }).join('');
+
+  historyEl.innerHTML = `<div class="lessons-section-head"><span class="lessons-section-title">Past classes${summarySuffix}</span></div>${groupsHTML}`;
 }
 
-function markNextClass(studentId, status) {
+function renderClassItem(s, c) {
+  const guruTime = fmtTimeInTZ(c.utcISO, guruTZ);
+  const dateStr  = new Date(c.utcISO).toLocaleDateString('en-US', { timeZone: guruTZ, weekday: 'short', month: 'short', day: 'numeric' });
+  const stuLine  = s.timezone ? `<br>${fmtTimeInTZ(c.utcISO, s.timezone)} ${tzAbbr(s.timezone)}` : '';
+  const noteLine = c.notes ? ` · ${esc(c.notes)}` : '';
+  const cmpCls   = c.status === 'completed' ? ' completed' : '';
+  const misCls   = c.status === 'missed'    ? ' missed'    : '';
+  const cmpClick = c._isScheduled ? `markScheduledClass('${s.id}','${c.id}','completed')`
+    : c.status === 'completed' ? `markHistoryClass('${s.id}','${c.id}',null)` : `markHistoryClass('${s.id}','${c.id}','completed')`;
+  const misClick = c._isScheduled ? `markScheduledClass('${s.id}','${c.id}','missed')`
+    : c.status === 'missed' ? `markHistoryClass('${s.id}','${c.id}',null)` : `markHistoryClass('${s.id}','${c.id}','missed')`;
+  return `<div class="class-history-item">
+    <div>
+      <div class="ci-time">${guruTime}</div>
+      <div class="ci-meta">${dateStr} · ${c.duration||60} min${noteLine}${stuLine}</div>
+    </div>
+    <div class="class-status-btns">
+      <button class="class-status-btn${cmpCls}" onclick="${cmpClick}">✓ Completed</button>
+      <button class="class-status-btn${misCls}" onclick="${misClick}">✗ Missed</button>
+    </div>
+  </div>`;
+}
+
+function toggleMonthGroup(ym) {
+  const content = document.getElementById('mg-' + ym);
+  const chevron = document.getElementById('mc-' + ym);
+  if (!content) return;
+  const opening = content.style.display === 'none';
+  content.style.display = opening ? 'block' : 'none';
+  if (chevron) chevron.style.transform = opening ? 'rotate(180deg)' : '';
+}
+
+function markScheduledClass(studentId, classId, status) {
   const s = students.find(x => x.id === studentId);
-  if (!s || !s.nextClass) return;
+  if (!s) return;
+  const sc = (s.scheduledClasses||[]).find(c => c.id === classId);
+  if (!sc) return;
+  s.scheduledClasses = s.scheduledClasses.filter(c => c.id !== classId);
   if (!s.classHistory) s.classHistory = [];
-  s.classHistory.push({ ...s.nextClass, id: uid(), status });
-  s.nextClass = null;
+  s.classHistory.push({ ...sc, status });
   saveStudents();
   renderClassesPanel(s);
   renderDetailPayments(s);
@@ -1382,7 +1776,7 @@ function toggleSchedCard(el) {
   const prev = document.querySelector('.class-slot.expanded');
   if (prev) {
     prev.classList.remove('expanded');
-    const row = prev.querySelector('.class-actions');
+    const row = prev.querySelector('.class-expanded-extra');
     if (row) row.remove();
   }
   schedExpandedKey = null;
@@ -1396,52 +1790,86 @@ function toggleSchedCard(el) {
   const isHistory = el.dataset.isHistory === 'true';
   const isPast    = isHistory || new Date(el.dataset.utc) < new Date();
   const histId    = el.dataset.histId || '';
+  const scId      = el.dataset.scId || '';
   const status    = el.dataset.status || '';
+
+  const stu = students.find(x => x.id === sid);
+  const phone = stu ? (stu.phone||'').replace(/[\s\-()]/g,'') : '';
+  const waNum = phone.replace('+','');
+
+  const svgPencil = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
+  const svgPerson = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  const svgVideo  = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>`;
+  const svgChat   = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+
+  const noPhoneHint = `<button class="dashed-cta" onclick="event.stopPropagation();openStudentForm('${sid}')">+ Add phone number</button>`;
+  const videoChatBtns = phone
+    ? `<a href="whatsapp://call?phone=${waNum}&video=1" class="class-action-btn" onclick="event.stopPropagation()">${svgVideo} Video</a>
+       <a href="https://wa.me/${waNum}" target="_blank" class="class-action-btn" onclick="event.stopPropagation()">${svgChat} Chat</a>`
+    : '';
 
   let actionsHTML;
   if (isPast) {
     const cmpCls = status === 'completed' ? ' action-completed' : '';
     const misCls = status === 'missed'    ? ' action-missed'    : '';
-    actionsHTML = `<div class="class-actions">
-      <button class="class-action-btn${cmpCls}" onclick="event.stopPropagation();markSchedStatus('${sid}','${histId}','completed',${isHistory})">✓ Completed</button>
-      <button class="class-action-btn${misCls}" onclick="event.stopPropagation();markSchedStatus('${sid}','${histId}','missed',${isHistory})">✗ Missed</button>
-      <button class="class-action-btn action-profile" onclick="event.stopPropagation();openDetail('${sid}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Student profile</button>
+    actionsHTML = `<div class="class-expanded-extra" onclick="event.stopPropagation()">
+      <div class="class-actions">
+        <button class="class-action-btn${cmpCls}" onclick="event.stopPropagation();markSchedStatus('${sid}','${histId}','${scId}','completed',${isHistory})">✓ Completed</button>
+        <button class="class-action-btn${misCls}" onclick="event.stopPropagation();markSchedStatus('${sid}','${histId}','${scId}','missed',${isHistory})">✗ Missed</button>
+        <button class="class-action-btn action-icon" onclick="event.stopPropagation();openDetail('${sid}')">${svgPerson}</button>
+      </div>
+      ${phone ? `<div class="class-actions" style="margin-top:8px;padding-top:0;border-top:none;">${videoChatBtns}</div>` : `<div style="margin-top:8px;">${noPhoneHint}</div>`}
     </div>`;
   } else {
-    actionsHTML = `<div class="class-actions">
-      <button class="class-action-btn action-reschedule" onclick="event.stopPropagation();openScheduleSheet('${sid}',false)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit</button>
-      <button class="class-action-btn action-profile" onclick="event.stopPropagation();openDetail('${sid}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Student profile</button>
+    actionsHTML = `<div class="class-expanded-extra" onclick="event.stopPropagation()">
+      <div class="class-actions">
+        <button class="class-action-btn action-icon" onclick="event.stopPropagation();openScheduleSheet('${sid}',false,'${scId}')">${svgPencil}</button>
+        <button class="class-action-btn action-icon" onclick="event.stopPropagation();openDetail('${sid}')">${svgPerson}</button>
+        ${videoChatBtns}
+        ${!phone ? noPhoneHint : ''}
+      </div>
     </div>`;
   }
   el.insertAdjacentHTML('beforeend', actionsHTML);
+  // After DOM mutation, browser won't re-evaluate hover target until mouse moves.
+  // Dispatch a synthetic mousemove to force pointer re-evaluation on Mac desktop.
+  requestAnimationFrame(() => {
+    document.dispatchEvent(new MouseEvent('mousemove', {
+      bubbles: true, cancelable: false, clientX: _cursorX, clientY: _cursorY
+    }));
+  });
 }
 
-function markSchedStatus(sid, histId, newStatus, isHistory) {
+function markSchedStatus(sid, histId, scId, newStatus, isHistory) {
   schedExpandedKey = null;
+  const s = students.find(x => x.id === sid);
+  if (!s) return;
   if (isHistory && histId) {
-    const s = students.find(x => x.id === sid);
-    const c = (s?.classHistory||[]).find(x => x.id === histId);
+    const c = (s.classHistory||[]).find(x => x.id === histId);
     if (!c) return;
     c.status = c.status === newStatus ? null : newStatus;
-    saveStudents();
-    renderClassesPanel(s);
-    renderDetailPayments(s);
-    if (currentTab === 'payments') renderPayments();
-    renderSchedule();
-  } else {
-    markNextClass(sid, newStatus);
+  } else if (scId) {
+    markScheduledClass(sid, scId, newStatus);
+    return;
   }
+  saveStudents();
+  renderClassesPanel(s);
+  renderDetailPayments(s);
+  if (currentTab === 'payments') renderPayments();
+  renderSchedule();
 }
 
 // ── Schedule class sheet ───────────────────────────────────────────────────
 // simple=true → create mode (student selector, no duration/notes)
 // simple=false → full edit mode (student pre-selected, all fields)
-function openScheduleSheet(studentId, simple) {
+function openScheduleSheet(studentId, simple, classId = null) {
   schedulingStudentId = studentId;
   scheduleSimpleMode = simple;
+  editingScheduleClassId = classId;
 
   const s = studentId ? students.find(x=>x.id===studentId) : null;
-  document.getElementById('sc-title').textContent = simple ? 'Schedule Class' : (s?.nextClass ? 'Edit Schedule' : 'Schedule Class');
+  const editingSc = classId ? (s?.scheduledClasses||[]).find(c=>c.id===classId) : null;
+  document.getElementById('sc-title').textContent = simple ? 'Schedule Class' : (editingSc ? 'Edit Schedule' : 'Schedule Class');
 
   const isCreate = !studentId || simple;
   document.getElementById('sc-student-group').style.display = isCreate ? 'block' : 'none';
@@ -1451,7 +1879,6 @@ function openScheduleSheet(studentId, simple) {
   document.getElementById('sc-time-label').textContent = `Class time (${tzAbbr(guruTZ)})`;
 
   if (isCreate) {
-    // populate student dropdown; fields stay hidden until student picked
     const sel = document.getElementById('sc-student-select');
     sel.innerHTML = `<option value="">Select student…</option>` +
       students.filter(x=>!x.archived).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
@@ -1459,15 +1886,15 @@ function openScheduleSheet(studentId, simple) {
     document.getElementById('sc-clear').style.display = 'none';
   } else {
     document.getElementById('sc-student-label').textContent = s?.name || '';
-    if (s?.nextClass) {
-      const {date,time} = utcToGuruLocal(s.nextClass.utcISO);
+    if (editingSc) {
+      const {date,time} = utcToGuruLocal(editingSc.utcISO);
       document.getElementById('sc-date').value = date;
       document.getElementById('sc-time').value = time;
-      document.getElementById('sc-duration').value = s.nextClass.duration||60;
-      document.getElementById('sc-notes').value = s.nextClass.notes||'';
+      document.getElementById('sc-duration').value = editingSc.duration||60;
+      document.getElementById('sc-notes').value = editingSc.notes||'';
       document.getElementById('sc-clear').style.display = 'inline-flex';
     } else {
-      document.getElementById('sc-date').value = guruToday();
+      document.getElementById('sc-date').value = getSchedSelectedDate();
       document.getElementById('sc-time').value = s?.classTime||'';
       document.getElementById('sc-duration').value = s?.classDuration||60;
       document.getElementById('sc-notes').value = '';
@@ -1510,9 +1937,9 @@ function updateSchedulePreview() {
   try {
     const utcISO = guruLocalToUTC(date, time);
     const dur = scheduleSimpleMode ? (s?.classDuration||60) : (parseInt(document.getElementById('sc-duration').value)||60);
-    const conflicts = checkConflict(sid, utcISO, dur);
+    const conflicts = checkConflict(sid, utcISO, dur, editingScheduleClassId);
     if (conflicts.length) {
-      const names = conflicts.map(x=>`${esc(x.name)} at ${fmtTimeInTZ(x.nextClass.utcISO,guruTZ)}`).join(', ');
+      const names = conflicts.map(x=>`${esc(x.name)} at ${fmtTimeInTZ(x.utcISO,guruTZ)}`).join(', ');
       conflictBox.innerHTML = `⚠ Conflicts with: ${names}`;
       conflictBox.classList.add('visible');
     } else {
@@ -1531,19 +1958,17 @@ function saveScheduleClass() {
   const s = students.find(x=>x.id===sid);
   if (!s) return;
 
-  if (s.nextClass && new Date(s.nextClass.utcISO) < new Date()) {
-    // Past nextClass → archive to history for marking
-    if (!s.classHistory) s.classHistory = [];
-    s.classHistory.push({ ...s.nextClass, id: uid(), status: null });
-  }
-
+  if (!s.scheduledClasses) s.scheduledClasses = [];
   const newUtcISO = guruLocalToUTC(date, time);
   const dur = scheduleSimpleMode ? (s.classDuration||60) : (parseInt(document.getElementById('sc-duration').value)||60);
-  s.nextClass = {
-    utcISO: newUtcISO,
-    duration: dur,
-    notes: document.getElementById('sc-notes').value.trim()
-  };
+  const newEntry = { id: editingScheduleClassId || uid(), utcISO: newUtcISO, duration: dur, notes: document.getElementById('sc-notes').value.trim() };
+  if (editingScheduleClassId) {
+    const idx = s.scheduledClasses.findIndex(c => c.id === editingScheduleClassId);
+    if (idx >= 0) s.scheduledClasses[idx] = newEntry; else s.scheduledClasses.push(newEntry);
+  } else {
+    s.scheduledClasses.push(newEntry);
+  }
+  s.scheduledClasses.sort((a,b) => new Date(a.utcISO) - new Date(b.utcISO));
   saveStudents();
   closeSheet('schedule-class-sheet');
 
@@ -1560,14 +1985,17 @@ function saveScheduleClass() {
   }
 }
 
-function clearNextClass() {
+function clearScheduledClass() {
   const s = students.find(x=>x.id===schedulingStudentId);
-  if (!s) return;
-  s.nextClass = null;
+  if (!s || !editingScheduleClassId) return;
+  s.scheduledClasses = (s.scheduledClasses||[]).filter(c => c.id !== editingScheduleClassId);
   saveStudents();
   closeSheet('schedule-class-sheet');
   renderSchedule();
   if (currentTab==='students') renderStudents(document.getElementById('search-input').value);
+  if (viewingStudentId === schedulingStudentId && document.getElementById('student-page').classList.contains('open')) {
+    renderClassesPanel(s);
+  }
 }
 
 // ── Student form ───────────────────────────────────────────────────────────
@@ -1576,6 +2004,7 @@ function openStudentForm(id = null) {
   document.getElementById('sf-title').textContent = id ? 'Edit Student' : 'Add Student';
   populateTZSelect('f-timezone', '');
   ['f-name','f-phone','f-email','f-lesson','f-notes'].forEach(fid=>document.getElementById(fid).value='');
+  setCCValue('');
   setFTime('');
   document.getElementById('f-duration').value = '60';
   document.getElementById('f-class-rate').value = '';
@@ -1587,7 +2016,9 @@ function openStudentForm(id = null) {
     const s = students.find(x=>x.id===id);
     if (s) {
       document.getElementById('f-name').value = s.name||'';
-      document.getElementById('f-phone').value = s.phone||'';
+      const { dial: parsedDial, local: parsedLocal } = parsePhoneCC(s.phone||'');
+      setCCValue(parsedDial);
+      document.getElementById('f-phone').value = parsedLocal;
       document.getElementById('f-email').value = s.email||'';
       setFTime(s.classTime||'');
       document.getElementById('f-duration').value = s.classDuration||60;
@@ -1614,7 +2045,7 @@ function saveStudentForm() {
   const name = document.getElementById('f-name').value.trim();
   if (!name) { document.getElementById('f-name').focus(); return; }
   const data = {
-    name, phone: document.getElementById('f-phone').value.trim(),
+    name, phone: (()=>{ const cc=document.getElementById('f-phone-cc').value; const loc=document.getElementById('f-phone').value.trim(); return loc?(cc?`+${cc} ${loc}`:loc):''; })(),
     email: document.getElementById('f-email').value.trim(),
     timezone: document.getElementById('f-timezone').value,
     currency: document.getElementById('f-currency').value||'₹',
@@ -1630,7 +2061,7 @@ function saveStudentForm() {
     const idx = students.findIndex(s=>s.id===editingStudentId);
     if (idx!==-1) students[idx] = {...students[idx], ...data};
   } else {
-    students.push({...data, id:uid(), joinDate:new Date().toISOString().slice(0,10), payments:[], compositions:[], classHistory:[], nextClass:null, archived:false});
+    students.push({...data, id:uid(), joinDate:new Date().toISOString().slice(0,10), payments:[], compositions:[], classHistory:[], scheduledClasses:[], archived:false});
   }
   saveStudents();
   closeSheet('student-form-sheet');
@@ -1644,7 +2075,7 @@ function archiveStudent() {
   const s = students.find(x=>x.id===editingStudentId);
   if (!s) return;
   s.archived = !s.archived;
-  if (s.archived && s.nextClass) s.nextClass = null;
+  if (s.archived) s.scheduledClasses = [];
   saveStudents();
   closeSheet('student-form-sheet');
   closeStudentPage();
@@ -1817,15 +2248,22 @@ function saveSettingsForm() {
 }
 
 // ── Sheet helpers ──────────────────────────────────────────────────────────
-function openSheet(id)  {
-  document.getElementById('overlay').classList.add('visible');
+function openSheet(id) {
+  const ov = document.getElementById('overlay');
+  ov.classList.add('visible');
   const el = document.getElementById(id);
   el.classList.add('open');
   const body = el.querySelector('.sheet-body');
   if (body) body.scrollTop = 0;
 }
-function closeSheet(id) { document.getElementById(id).classList.remove('open'); if (!document.querySelectorAll('.sheet.open').length) document.getElementById('overlay').classList.remove('visible'); }
-function closeAllSheets() { document.querySelectorAll('.sheet.open').forEach(s=>s.classList.remove('open')); document.getElementById('overlay').classList.remove('visible'); }
+function closeSheet(id) {
+  document.getElementById(id).classList.remove('open');
+  if (!document.querySelectorAll('.sheet.open').length) document.getElementById('overlay').classList.remove('visible');
+}
+function closeAllSheets() {
+  document.querySelectorAll('.sheet.open').forEach(s => s.classList.remove('open'));
+  document.getElementById('overlay').classList.remove('visible');
+}
 function openStudentPage()  { document.getElementById('student-page').classList.add('open'); }
 function closeStudentPage() { document.getElementById('student-page').classList.remove('open'); }
 function activatePanel(panelId) {
@@ -1850,6 +2288,10 @@ function refreshAll() {
   renderSchedule();
   if (currentTab==='payments') renderPayments();
 }
+
+// Track cursor position so we can nudge the browser after DOM mutations
+let _cursorX = 0, _cursorY = 0;
+document.addEventListener('mousemove', e => { _cursorX = e.clientX; _cursorY = e.clientY; }, { passive: true });
 
 // ── Swipe on schedule tab ──────────────────────────────────────────────────
 let swipeStartX = null, swipeStartY = null;
@@ -1911,9 +2353,8 @@ document.querySelectorAll('#student-page .sheet-tab').forEach(t=>t.addEventListe
 
 // Schedule class
 document.getElementById('sc-close').addEventListener('click', ()=>closeSheet('schedule-class-sheet'));
-document.getElementById('sc-cancel').addEventListener('click', ()=>closeSheet('schedule-class-sheet'));
 document.getElementById('sc-save').addEventListener('click', saveScheduleClass);
-document.getElementById('sc-clear').addEventListener('click', clearNextClass);
+document.getElementById('sc-clear').addEventListener('click', clearScheduledClass);
 ['sc-date','sc-time','sc-duration'].forEach(id=>{
   const el = document.getElementById(id);
   if (el) { el.addEventListener('input', updateSchedulePreview); el.addEventListener('change', updateSchedulePreview); }
@@ -1924,7 +2365,7 @@ document.getElementById('sc-student-select').addEventListener('change', ()=>{
     document.getElementById('sc-fields').style.display = 'block';
     const s = students.find(x=>x.id===id);
     if (s) {
-      document.getElementById('sc-date').value = guruToday();
+      document.getElementById('sc-date').value = getSchedSelectedDate();
       document.getElementById('sc-time').value = s.classTime || '';
       document.getElementById('sc-duration').value = s.classDuration || 60;
       document.getElementById('sc-notes').value = '';
@@ -1962,6 +2403,9 @@ document.getElementById('search-input').addEventListener('input', e=>renderStude
 function init() {
   guruTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   load();
+  const wsd = settings.weekStartDay ?? 0;
+  const dow = new Date(guruToday() + 'T12:00:00Z').getDay();
+  schedWeekDay = (dow - wsd + 7) % 7;
   switchTab('schedule');
 }
 
