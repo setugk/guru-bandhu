@@ -231,8 +231,16 @@
     .form-input, .form-textarea { appearance: none; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
     .form-textarea { resize: vertical; min-height: 90px; }
-    .time-select-row { display: flex; gap: 8px; }
-    .time-select-row .form-select { flex: 1; min-width: 0; }
+    .time-select-row { display: flex; align-items: center; gap: 6px; }
+    .time-colon { font-size: 15px; font-weight: 600; color: var(--text-3); }
+    .custom-select-btn { flex: 1; min-width: 0; border: 1px solid var(--border-mid); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 15px; font-family: inherit; background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: space-between; gap: 6px; cursor: pointer; appearance: none; -webkit-appearance: none; }
+    .custom-select-btn.open { border-color: var(--accent); }
+    .custom-select-btn .cd-chevron { flex-shrink: 0; color: var(--text-3); transition: transform 0.15s; }
+    .custom-select-btn.open .cd-chevron { transform: rotate(180deg); color: var(--accent); }
+    .custom-dropdown-menu { position: fixed; z-index: 400; background: var(--bg); border: 1px solid var(--border-mid); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(0,0,0,0.18); max-height: 240px; overflow-y: auto; display: none; }
+    .cd-option { padding: 10px 14px; font-size: 15px; color: var(--text); cursor: pointer; }
+    .cd-option:hover { background: var(--bg-subtle); }
+    .cd-option.selected { background: var(--accent); color: var(--accent-fg); font-weight: 600; }
     .form-row { display: flex; gap: 12px; }
     .form-row .form-group { flex: 1; min-width: 0; }
     .form-select { padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23737373' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; appearance: none; }
@@ -339,7 +347,7 @@
 <body>
 <div id="app">
   <header id="header">
-    <span class="header-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#hdr-icon-grad)"/><defs><linearGradient id="hdr-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu<span class="app-version">v1.83</span></span>
+    <span class="header-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#hdr-icon-grad)"/><defs><linearGradient id="hdr-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu<span class="app-version">v1.84</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -454,6 +462,7 @@
 </div>
 
 <div class="overlay" id="overlay"></div>
+<div class="custom-dropdown-menu" id="custom-dropdown-menu"></div>
 
 <!-- Student form sheet -->
 <div class="sheet" id="student-form-sheet">
@@ -499,14 +508,10 @@
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-label">Usual time</label><div class="time-select-row">
-          <select class="form-select" id="f-time-hour">
-            <option value="">—</option>
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
-            <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-          </select>
-          <select class="form-select" id="f-time-min"><option value="00">:00</option><option value="30">:30</option></select>
-          <select class="form-select" id="f-time-ampm"><option value="AM">AM</option><option value="PM">PM</option></select>
+          <button type="button" class="custom-select-btn" id="f-time-hour-btn" onclick="openTimeDropdown('f-time-hour', this)"><span id="f-time-hour-label">—</span><svg class="cd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <span class="time-colon">:</span>
+          <button type="button" class="custom-select-btn" id="f-time-min-btn" onclick="openTimeDropdown('f-time-min', this)"><span id="f-time-min-label">00</span><svg class="cd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" class="custom-select-btn" id="f-time-ampm-btn" onclick="openTimeDropdown('f-time-ampm', this)"><span id="f-time-ampm-label">AM</span><svg class="cd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         </div></div>
         <div class="form-group"><label class="form-label">Duration (min)</label><input type="number" class="form-input" id="f-duration" placeholder="60" min="15" step="15"></div>
       </div>
@@ -587,14 +592,10 @@
       <div class="form-group">
         <label class="form-label" id="sc-time-label">Class time</label>
         <div class="time-select-row">
-          <select class="form-select" id="sc-time-hour">
-            <option value="">—</option>
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option>
-            <option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
-            <option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
-          </select>
-          <select class="form-select" id="sc-time-min"><option value="00">:00</option><option value="30">:30</option></select>
-          <select class="form-select" id="sc-time-ampm"><option value="AM">AM</option><option value="PM">PM</option></select>
+          <button type="button" class="custom-select-btn" id="sc-time-hour-btn" onclick="openTimeDropdown('sc-time-hour', this)"><span id="sc-time-hour-label">—</span><svg class="cd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <span class="time-colon">:</span>
+          <button type="button" class="custom-select-btn" id="sc-time-min-btn" onclick="openTimeDropdown('sc-time-min', this)"><span id="sc-time-min-label">00</span><svg class="cd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          <button type="button" class="custom-select-btn" id="sc-time-ampm-btn" onclick="openTimeDropdown('sc-time-ampm', this)"><span id="sc-time-ampm-label">AM</span><svg class="cd-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
         </div>
         <div id="sc-stu-time" class="sch-stu-time" style="display:none;"></div>
       </div>
@@ -949,29 +950,75 @@ function fmtTimeVal(val) {
   const [h, m] = val.split(':').map(Number);
   return new Date(2000, 0, 1, h, m).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
-// ── Hour/minute/AM-PM dropdown time selectors ───────────────────────────────
+// ── Hour/minute/AM-PM custom dropdown time selectors ────────────────────────
+const TIME_HOUR_OPTIONS = [{value:'',label:'—'}, ...Array.from({length:12},(_,i)=>({value:String(i+1),label:String(i+1)}))];
+const TIME_MIN_OPTIONS  = [{value:'00',label:'00'},{value:'30',label:'30'}];
+const TIME_AMPM_OPTIONS = [{value:'AM',label:'AM'},{value:'PM',label:'PM'}];
+let timeFieldValues = {};
+
+function timeOptionsFor(fieldId) {
+  if (fieldId.endsWith('-hour')) return TIME_HOUR_OPTIONS;
+  if (fieldId.endsWith('-min'))  return TIME_MIN_OPTIONS;
+  return TIME_AMPM_OPTIONS;
+}
+function timeDefaultFor(fieldId) {
+  if (fieldId.endsWith('-min'))  return '00';
+  if (fieldId.endsWith('-ampm')) return 'AM';
+  return '';
+}
+function setTimeField(fieldId, val) {
+  timeFieldValues[fieldId] = val;
+  const lbl = document.getElementById(fieldId + '-label');
+  if (!lbl) return;
+  const opt = timeOptionsFor(fieldId).find(o => o.value === val);
+  lbl.textContent = opt ? opt.label : timeOptionsFor(fieldId)[0].label;
+}
 function getTimeFromSelects(prefix) {
-  const h = document.getElementById(prefix + '-hour').value;
+  const h = timeFieldValues[prefix + '-hour'];
   if (!h) return '';
-  const m  = document.getElementById(prefix + '-min').value;
-  const ap = document.getElementById(prefix + '-ampm').value;
+  const m  = timeFieldValues[prefix + '-min']  || '00';
+  const ap = timeFieldValues[prefix + '-ampm'] || 'AM';
   let h24 = parseInt(h) % 12;
   if (ap === 'PM') h24 += 12;
   return `${String(h24).padStart(2,'0')}:${m}`;
 }
 function setTimeSelects(prefix, val24) {
-  const hourEl = document.getElementById(prefix + '-hour');
-  const minEl  = document.getElementById(prefix + '-min');
-  const apEl   = document.getElementById(prefix + '-ampm');
-  if (!val24) { hourEl.value = ''; minEl.value = '00'; apEl.value = 'AM'; return; }
+  if (!val24) {
+    setTimeField(prefix + '-hour', '');
+    setTimeField(prefix + '-min', '00');
+    setTimeField(prefix + '-ampm', 'AM');
+    return;
+  }
   const [hh, mm] = val24.split(':').map(Number);
   let h12 = hh % 12; if (h12 === 0) h12 = 12;
-  hourEl.value = String(h12);
-  minEl.value  = mm >= 30 ? '30' : '00';
-  apEl.value   = hh >= 12 ? 'PM' : 'AM';
+  setTimeField(prefix + '-hour', String(h12));
+  setTimeField(prefix + '-min', mm >= 30 ? '30' : '00');
+  setTimeField(prefix + '-ampm', hh >= 12 ? 'PM' : 'AM');
 }
 function setFTime(val)  { setTimeSelects('f-time', val); }
 function setScTime(val) { setTimeSelects('sc-time', val); }
+
+let cdField = null;
+function openTimeDropdown(fieldId, btnEl) {
+  if (cdField === fieldId) { closeCustomDropdown(); return; }
+  const opts = timeOptionsFor(fieldId);
+  const current = timeFieldValues[fieldId] ?? timeDefaultFor(fieldId);
+  const menu = document.getElementById('custom-dropdown-menu');
+  menu.innerHTML = opts.map(o => `<div class="cd-option${o.value===current?' selected':''}" data-value="${esc(o.value)}">${esc(o.label)}</div>`).join('');
+  const rect = btnEl.getBoundingClientRect();
+  menu.style.left = rect.left + 'px';
+  menu.style.top = (rect.bottom + 6) + 'px';
+  menu.style.minWidth = rect.width + 'px';
+  menu.style.display = 'block';
+  document.querySelectorAll('.custom-select-btn.open').forEach(b => b.classList.remove('open'));
+  btnEl.classList.add('open');
+  cdField = fieldId;
+}
+function closeCustomDropdown() {
+  document.getElementById('custom-dropdown-menu').style.display = 'none';
+  document.querySelectorAll('.custom-select-btn.open').forEach(b => b.classList.remove('open'));
+  cdField = null;
+}
 
 function addDays(dateStr, n) {
   const [y,m,d] = dateStr.split('-').map(Number);
@@ -2395,6 +2442,20 @@ document.getElementById('overlay').addEventListener('click', () => {
   if (!document.querySelectorAll('.sheet.open').length) document.getElementById('overlay').classList.remove('visible');
 });
 
+document.getElementById('custom-dropdown-menu').addEventListener('click', e => {
+  const opt = e.target.closest('.cd-option');
+  if (!opt || !cdField) return;
+  const val = opt.dataset.value;
+  const fieldId = cdField;
+  closeCustomDropdown();
+  setTimeField(fieldId, val);
+  if (fieldId.startsWith('sc-time')) updateSchedulePreview();
+});
+document.addEventListener('click', e => {
+  if (cdField && !e.target.closest('#custom-dropdown-menu') && !e.target.closest('.custom-select-btn')) closeCustomDropdown();
+});
+document.addEventListener('scroll', () => { if (cdField) closeCustomDropdown(); }, true);
+
 // Student form
 document.getElementById('sf-close').addEventListener('click', ()=>closeSheet('student-form-sheet'));
 document.getElementById('sf-cancel').addEventListener('click', ()=>closeSheet('student-form-sheet'));
@@ -2416,7 +2477,7 @@ document.querySelectorAll('#student-page .sheet-tab').forEach(t=>t.addEventListe
 document.getElementById('sc-close').addEventListener('click', ()=>closeSheet('schedule-class-sheet'));
 document.getElementById('sc-save').addEventListener('click', saveScheduleClass);
 document.getElementById('sc-clear').addEventListener('click', clearScheduledClass);
-['sc-date','sc-duration','sc-time-hour','sc-time-min','sc-time-ampm'].forEach(id=>{
+['sc-date','sc-duration'].forEach(id=>{
   const el = document.getElementById(id);
   if (el) { el.addEventListener('input', updateSchedulePreview); el.addEventListener('change', updateSchedulePreview); }
 });
