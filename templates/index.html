@@ -12,13 +12,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <style>
-    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
-    @font-face { font-family: 'Redaction 10'; src: url('./fonts/web/Redaction10-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
-    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
-    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
-    @font-face { font-family: 'Instrument Sans'; src: url('./fonts/web/InstrumentSans-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Redaction 10'; src: url('/static/fonts/web/Redaction10-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Redaction 10'; src: url('/static/fonts/web/Redaction10-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Redaction 10'; src: url('/static/fonts/web/Redaction10-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('/static/fonts/web/InstrumentSans-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('/static/fonts/web/InstrumentSans-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('/static/fonts/web/InstrumentSans-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Instrument Sans'; src: url('/static/fonts/web/InstrumentSans-Bold.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --bg: #FFFFFF; --bg-subtle: #FAFAFA; --surface: #FFFFFF;
@@ -231,6 +231,16 @@
     .form-input, .form-textarea { appearance: none; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--accent); }
     .form-textarea { resize: vertical; min-height: 90px; }
+    .switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .switch-row .form-hint { margin: 2px 0 0; }
+    .switch { position: relative; display: inline-block; width: 44px; height: 26px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch-slider { position: absolute; inset: 0; background: var(--border-mid); border-radius: 99px; transition: background 0.15s; cursor: pointer; }
+    .switch-slider::before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.15s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+    .switch input:checked + .switch-slider { background: var(--accent); }
+    .switch input:checked + .switch-slider::before { transform: translateX(18px); }
+    .sample-badge { display: none; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; color: var(--warning); background: var(--warning-bg); border: 1px solid var(--warning); border-radius: 99px; padding: 2px 7px; margin-left: 6px; vertical-align: middle; }
+    body.sample-mode .sample-badge { display: inline-block; }
     input[type="date"]::-webkit-date-and-time-value { text-align: left; }
     .time-trigger-btn { width: 100%; border: 1px solid var(--border-mid); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 15px; font-family: inherit; background: var(--bg); color: var(--text); display: flex; align-items: center; justify-content: space-between; gap: 6px; cursor: pointer; appearance: none; -webkit-appearance: none; }
     .time-trigger-btn.open { border-color: var(--accent); }
@@ -300,6 +310,16 @@
     .btn-secondary { background: #EFEFEF; color: var(--text); border: 1px solid var(--border); padding: 12px 16px; }
     .btn-danger    { background: #FFE4E6; color: var(--danger); padding: 12px 14px; }
     .btn-ghost { background: none; border: 1px solid var(--border); color: var(--text-2); font-size: 13px; font-weight: 500; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; padding: 6px 12px; }
+
+    /* Login screen */
+    #login-screen { position: fixed; inset: 0; z-index: 500; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 24px; }
+    #login-screen.hidden { display: none; }
+    #login-screen .hidden { display: none; }
+    body.authed #app { display: flex; }
+    body:not(.authed) #app { display: none; }
+    .login-card { width: 100%; max-width: 340px; }
+    .login-title { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; margin-bottom: 28px; }
+    .login-error { color: var(--danger); font-size: 13px; min-height: 18px; margin-top: 4px; }
     .btn-ghost:hover { border-color: var(--border-mid); }
     .danger-link { background: none; border: none; color: var(--danger); font-size: 13px; cursor: pointer; padding: 0; font-family: inherit; }
     .danger-link:hover { text-decoration: underline; }
@@ -355,9 +375,21 @@
   </style>
 </head>
 <body>
+<div id="login-screen" class="hidden">
+  <div class="login-card">
+    <div class="login-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#login-icon-grad)"/><defs><linearGradient id="login-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu</div>
+    <div class="form-group hidden" id="login-teacher-name-group"><label class="form-label">Teacher name</label><input type="text" class="form-input" id="login-teacher-name"></div>
+    <div class="form-group"><label class="form-label">Username</label><input type="text" class="form-input" id="login-username" autocomplete="username"></div>
+    <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="login-password" autocomplete="current-password"></div>
+    <div class="form-group hidden" id="login-invite-group"><label class="form-label">Invite code</label><input type="text" class="form-input" id="login-invite-code"></div>
+    <div class="login-error" id="login-error"></div>
+    <button class="btn btn-primary" id="login-submit" style="width:100%;margin-top:8px;">Sign in</button>
+    <button class="btn-ghost" id="login-toggle-mode" style="width:100%;margin-top:14px;text-align:center;">New guru? Create an account</button>
+  </div>
+</div>
 <div id="app">
   <header id="header">
-    <span class="header-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#hdr-icon-grad)"/><defs><linearGradient id="hdr-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu<span class="app-version">v1.0.0</span></span>
+    <span class="header-title"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><path d="M6.72363 5.16149C9.25285 5.16149 11.3257 7.18581 11.3262 9.70934C11.3262 9.72114 11.3253 9.73369 11.3252 9.74547C11.3469 9.82479 11.3581 9.90912 11.3564 9.99547L11.2656 14.6175V18.7006C11.2655 19.7952 10.5624 20.766 9.52246 21.1078L6.62695 22.059C4.98826 22.597 3.30308 21.3765 3.30273 19.6517V18.5131C3.30291 17.5235 3.87835 16.6238 4.77734 16.2103L9.51758 14.0306L9.53125 13.3109C8.75246 13.9042 7.7783 14.2572 6.72363 14.2572C4.1944 14.2569 2.12207 12.2331 2.12207 9.70934C2.12249 7.18599 4.19466 5.16178 6.72363 5.16149ZM5.5127 17.8099C5.23832 17.9363 5.06268 18.211 5.0625 18.5131V19.6517C5.06284 20.1785 5.57756 20.5515 6.07812 20.3871L8.97266 19.4359C9.29029 19.3315 9.50573 19.0349 9.50586 18.7006V15.974L5.5127 17.8099ZM16.9307 1.16637C18.5693 0.628554 20.2546 1.84891 20.2549 3.5736V4.71227C20.2547 5.70169 19.6791 6.60145 18.7803 7.01501L14.04 9.19469L14.0254 9.91247C14.8041 9.31947 15.7796 8.96813 16.834 8.96813C19.363 8.96868 21.4355 10.9924 21.4355 13.516C21.4351 16.0391 19.3627 18.0633 16.834 18.0638C14.3048 18.0638 12.2319 16.0395 12.2314 13.516C12.2314 13.5042 12.2314 13.4916 12.2314 13.4798C12.2098 13.4005 12.1995 13.3162 12.2012 13.2298L12.292 8.60778V4.52477C12.2921 3.43001 12.9951 2.45927 14.0352 2.11754L16.9307 1.16637ZM16.834 10.7279C15.2521 10.7279 13.9912 11.9883 13.9912 13.516C13.9917 15.0432 15.2524 16.3041 16.834 16.3041C18.4151 16.3035 19.6753 15.0429 19.6758 13.516C19.6758 11.9887 18.4154 10.7284 16.834 10.7279ZM6.72363 6.92126C5.14229 6.92154 3.88226 8.18223 3.88184 9.70934C3.88184 11.2368 5.14202 12.4971 6.72363 12.4974C8.3055 12.4974 9.56641 11.237 9.56641 9.70934C9.56598 8.18205 8.30523 6.92126 6.72363 6.92126ZM18.4951 3.5736C18.4948 3.04686 17.98 2.67406 17.4795 2.83825L14.585 3.78942C14.2672 3.89379 14.0518 4.19034 14.0518 4.52477V7.25133L18.0449 5.4154C18.3191 5.28899 18.4949 5.01424 18.4951 4.71227V3.5736Z" fill="url(#hdr-icon-grad)"/><defs><linearGradient id="hdr-icon-grad" x1="20.2732" y1="1.58806" x2="7.07428" y2="18.6386" gradientUnits="userSpaceOnUse"><stop offset="0.120192" stop-color="#D73600"/><stop offset="1" stop-color="#E78B00"/></linearGradient></defs></svg>Guru Bandhu<span class="app-version">v1.1.1</span><span class="sample-badge">SAMPLE</span></span>
     <button class="header-action" id="settings-btn" aria-label="Settings">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     </button>
@@ -686,15 +718,22 @@
     </div>
     <div class="info-row"><span class="info-row-label">Your timezone</span><span class="info-row-val" id="s-tz-display"></span></div>
     <p class="form-hint">Automatically detected from your device. Updates when you travel.</p>
+    <div class="form-group" style="margin-top:20px;">
+      <div class="switch-row">
+        <div>
+          <label class="form-label" style="margin-bottom:2px;">Sample data</label>
+          <p class="form-hint">Preview the app with example students. Your real data is never touched or deleted.</p>
+        </div>
+        <label class="switch"><input type="checkbox" id="s-sample-mode"><span class="switch-slider"></span></label>
+      </div>
+    </div>
   </div>
-  <div class="sheet-footer"><button class="btn btn-primary" id="stg-save">Save</button></div>
+  <div class="sheet-footer"><button class="btn btn-secondary" id="stg-logout">Log out</button><button class="btn btn-primary" id="stg-save">Save</button></div>
 </div>
 
 <script>
 // ── Config ─────────────────────────────────────────────────────────────────
-const APP_VERSION = '3.0';
-const LS_STUDENTS = 'guru-students';
-const LS_SETTINGS = 'guru-settings';
+const APP_VERSION = '1.1.1';
 
 const TIMEZONES = [
   { label: 'Mumbai / Delhi (IST)',   value: 'Asia/Kolkata'        },
@@ -934,7 +973,7 @@ function parsePhoneCC(phone) {
 }
 
 // ── State ──────────────────────────────────────────────────────────────────
-let students = [], settings = { teacherName: '' }, guruTZ = 'Asia/Kolkata';
+let students = [], realStudents = [], settings = { teacherName: '' }, guruTZ = 'Asia/Kolkata';
 let editingStudentId = null, viewingStudentId = null;
 let schedulingStudentId = null, scheduleSimpleMode = false;
 let editingBandishStudentId = null, editingBandishId = null;
@@ -946,18 +985,150 @@ let editingScheduleClassId = null;
 let showArchived = false, pastLessonsOpen = false, payUpToDateOpen = false;
 
 // ── Persistence ────────────────────────────────────────────────────────────
-function load() {
-  try { students = JSON.parse(localStorage.getItem(LS_STUDENTS)) || []; } catch { students = []; }
-  try { settings = { teacherName: '', weekStartDay: 0, ...JSON.parse(localStorage.getItem(LS_SETTINGS)) }; } catch {}
+async function load() {
+  const res = await fetch('/api/state');
+  const state = await res.json();
+  realStudents = state.students || [];
+  settings = { teacherName: '', weekStartDay: 0, sampleDataMode: false, ...state.settings };
   // migrate: nextClass (single) → scheduledClasses (array)
-  students.forEach(s => {
+  realStudents.forEach(s => {
     if (!s.scheduledClasses) s.scheduledClasses = [];
     if (s.nextClass) { s.scheduledClasses.push({ id: uid(), ...s.nextClass }); delete s.nextClass; }
     (s.payments||[]).forEach(p => { if (!p.id) p.id = uid(); });
   });
+  applyDataMode();
 }
-function saveStudents() { localStorage.setItem(LS_STUDENTS, JSON.stringify(students)); }
-function saveSettings()  { localStorage.setItem(LS_SETTINGS, JSON.stringify(settings)); }
+// Sample mode is a view-only preview: `students` points at throwaway sample data instead of
+// `realStudents`, and saveStudents() below refuses to persist while it's active — so nothing
+// a guru does while previewing can ever reach (or overwrite) their real data.
+function applyDataMode() {
+  students = settings.sampleDataMode ? getSampleStudents() : realStudents;
+  document.body.classList.toggle('sample-mode', !!settings.sampleDataMode);
+}
+function saveStudents() {
+  if (settings.sampleDataMode) return;
+  fetch('/api/state/students', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: students }) });
+}
+function saveSettings()  { fetch('/api/state/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value: settings }) }); }
+
+// ── Sample data (Settings → "Sample data" toggle) ───────────────────────────
+function sampleISO(daysOffset, hour, minute = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + daysOffset);
+  d.setHours(hour, minute, 0, 0);
+  return d.toISOString();
+}
+function sampleDateStr(daysOffset) {
+  const d = new Date();
+  d.setDate(d.getDate() + daysOffset);
+  return d.toLocaleString('sv-SE').slice(0, 10);
+}
+// Builds one sample student's classHistory: `total` weekly-cadence classes going backward,
+// with `missed` of them (spread roughly evenly through the run) marked as missed rather than completed.
+function sampleHistory(id, total, missed, hour, minute, duration) {
+  const history = [];
+  let missedLeft = missed;
+  const gap = missed ? Math.max(1, Math.floor(total / (missed + 1))) : 0;
+  for (let i = total; i >= 1; i--) {
+    const status = (missedLeft > 0 && i % gap === 0) ? 'missed' : 'completed';
+    if (status === 'missed') missedLeft--;
+    history.push({ id: `${id}-h${i}`, utcISO: sampleISO(-7 * i, hour, minute), duration, notes: '', status });
+  }
+  return history;
+}
+function buildSampleStudent(spec, idx) {
+  const id = `sample-${idx + 1}`;
+  return {
+    id, name: spec.name, phone: spec.phone, email: spec.email, timezone: spec.tz,
+    joinDate: sampleDateStr(-(spec.joinedDaysAgo || 120)), currency: spec.currency, classRate: spec.rate,
+    payEveryNClasses: 4, currentLesson: spec.lesson, notes: spec.notes || '',
+    scheduledClasses: spec.nextDay == null ? [] : [{ id: `${id}-sc1`, utcISO: sampleISO(spec.nextDay, spec.hour, spec.minute || 0), duration: spec.duration || 60, notes: '' }],
+    classHistory: sampleHistory(id, spec.completed + spec.missed, spec.missed, spec.hour, spec.minute || 0, spec.duration || 60),
+    payments: spec.paidClasses ? [{ id: `${id}-p1`, classesCount: spec.paidClasses, amount: spec.paidAmount, paidDate: sampleDateStr(-(spec.paidDaysAgo || 20)), status: 'paid', currency: spec.currency }] : [],
+    compositions: [{ id: `${id}-c1`, name: spec.composition || `${spec.lesson.split(' — ')[0]} basics`, dateAdded: sampleDateStr(-(spec.joinedDaysAgo || 120) + 20), status: 'completed' }],
+    archived: !!spec.archived,
+  };
+}
+function getSampleStudents() {
+  const specs = [
+    // Busy week ahead — several students per day, mon–sat
+    { name: 'Priya Sharma',      phone: '+91 98765 43210', email: 'priya.sharma@example.com',   tz: 'Asia/Kolkata',        currency: 'USD', rate: 25,  lesson: 'Teentaal — layakari variations',     notes: 'Prefers evening classes on weekdays.', nextDay: 1, hour: 17,   completed: 4,  missed: 0, paidClasses: 4,  paidAmount: 100,  joinedDaysAgo: 120 },
+    { name: 'Rohan Deshpande',   phone: '+91 99887 65432', email: 'rohan.d@example.com',        tz: 'Asia/Kolkata',        currency: 'INR', rate: 700, lesson: 'Jhaptaal — basic theka',              notes: '',                                       nextDay: 1, hour: 16,   completed: 8,  missed: 0, paidClasses: 8,  paidAmount: 5600, joinedDaysAgo: 200 },
+    { name: 'Kavya Nair',        phone: '+91 90123 45678', email: 'kavya.nair@example.com',     tz: 'Asia/Kolkata',        currency: 'INR', rate: 750, lesson: 'Dadra — light classical',             notes: '',                                       nextDay: 1, hour: 19,   completed: 3,  missed: 0, paidClasses: 0,  paidAmount: 0,    joinedDaysAgo: 40  },
+    { name: 'Arjun Mehta',       phone: '+1 415 555 0142', email: 'arjun.mehta@example.com',    tz: 'America/Los_Angeles', currency: 'USD', rate: 30,  lesson: 'Rupak taal — hand independence',      notes: 'New to tabla, started six months ago.',  nextDay: 2, hour: 18,   minute: 30, completed: 6, missed: 1, paidClasses: 4, paidAmount: 120, joinedDaysAgo: 190 },
+    { name: 'Wei Chen',          phone: '+1 646 555 0110', email: 'wei.chen@example.com',       tz: 'America/New_York',   currency: 'USD', rate: 28,  lesson: 'Teentaal — intro theka',              notes: 'Beginner, very enthusiastic.',           nextDay: 2, hour: 17,   minute: 30, completed: 2, missed: 0, paidClasses: 0, paidAmount: 0,   joinedDaysAgo: 25  },
+    { name: 'Sara Ali',          phone: '+44 7700 900123', email: 'sara.ali@example.com',       tz: 'Europe/London',       currency: 'GBP', rate: 22,  lesson: 'Keherwa — folk rhythms',              notes: '',                                       nextDay: 3, hour: 18,   completed: 12, missed: 1, paidClasses: 12, paidAmount: 264, joinedDaysAgo: 260 },
+    { name: 'Devansh Patel',     phone: '+91 91234 56780', email: 'devansh.patel@example.com',  tz: 'Asia/Kolkata',        currency: 'INR', rate: 650, lesson: 'Teentaal — advanced kaydas',          notes: '',                                       nextDay: 3, hour: 16,   minute: 30, completed: 14, missed: 2, paidClasses: 14, paidAmount: 9100, joinedDaysAgo: 320 },
+    { name: 'Meher Singh',       phone: '+91 98111 22334', email: 'meher.singh@example.com',    tz: 'Asia/Kolkata',        currency: 'INR', rate: 700, lesson: 'Rupak taal — peshkar',                notes: '',                                       nextDay: 4, hour: 17,   completed: 5,  missed: 0, paidClasses: 4,  paidAmount: 2800, joinedDaysAgo: 60  },
+    { name: 'Lucas Rodriguez',   phone: '+1 213 555 0199', email: 'lucas.r@example.com',        tz: 'America/Los_Angeles', currency: 'USD', rate: 26,  lesson: 'Dadra — vocal accompaniment',         notes: '',                                       nextDay: 4, hour: 18,   completed: 14, missed: 1, paidClasses: 14, paidAmount: 364,  joinedDaysAgo: 210 },
+    { name: 'Ishita Verma',      phone: '+91 97654 32109', email: 'ishita.verma@example.com',   tz: 'Asia/Kolkata',        currency: 'INR', rate: 800, lesson: 'Ektaal — chakradar',                  notes: '',                                       nextDay: 5, hour: 16,   completed: 9,  missed: 0, paidClasses: 8,  paidAmount: 6400, joinedDaysAgo: 150 },
+    { name: 'Noah Kim',          phone: '+1 917 555 0177', email: 'noah.kim@example.com',       tz: 'America/New_York',   currency: 'USD', rate: 30,  lesson: 'Teentaal — kaydas',                   notes: '',                                       nextDay: 5, hour: 19,   completed: 14, missed: 2, paidClasses: 14, paidAmount: 420,  joinedDaysAgo: 230 },
+    { name: 'Zara Ahmed',        phone: '+44 7700 900456', email: 'zara.ahmed@example.com',     tz: 'Europe/London',       currency: 'GBP', rate: 20,  lesson: 'Keherwa — intro',                     notes: 'Just started last month.',               nextDay: 6, hour: 17,   completed: 1,  missed: 0, paidClasses: 0,  paidAmount: 0,    joinedDaysAgo: 15  },
+    // Archived
+    { name: 'Ananya Iyer',       phone: '+91 90000 11223', email: 'ananya.iyer@example.com',    tz: 'Asia/Kolkata',        currency: 'INR', rate: 800, lesson: 'Ektaal — advanced compositions',      notes: 'Moved to Bangalore, lessons paused for now.', nextDay: null, hour: 16, completed: 4, missed: 0, paidClasses: 4,  paidAmount: 3200, joinedDaysAgo: 400, paidDaysAgo: 68, archived: true },
+    { name: 'Fatima Khan',       phone: '+91 96543 21098', email: 'fatima.khan@example.com',    tz: 'Asia/Kolkata',        currency: 'INR', rate: 750, lesson: 'Jhaptaal — relas',                    notes: 'On a break for exams, resuming next month.',  nextDay: null, hour: 15, completed: 6, missed: 0, paidClasses: 6,  paidAmount: 4500, joinedDaysAgo: 300, paidDaysAgo: 50, archived: true },
+    { name: 'Kiran Joshi',       phone: '+91 93456 78901', email: 'kiran.joshi@example.com',    tz: 'Asia/Kolkata',        currency: 'INR', rate: 500, lesson: 'Teentaal — basics',                   notes: 'Discontinued lessons last year.',             nextDay: null, hour: 17, completed: 10, missed: 0, paidClasses: 10, paidAmount: 5000, joinedDaysAgo: 500, paidDaysAgo: 200, archived: true },
+  ];
+  return specs.map(buildSampleStudent);
+}
+
+// ── Auth ───────────────────────────────────────────────────────────────────
+async function checkAuth() {
+  const res = await fetch('/api/me');
+  if (res.ok) {
+    document.body.classList.add('authed');
+    document.getElementById('login-screen').classList.add('hidden');
+    init();
+  } else {
+    document.getElementById('login-screen').classList.remove('hidden');
+  }
+}
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+  const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
+  if (res.ok) {
+    document.body.classList.add('authed');
+    document.getElementById('login-screen').classList.add('hidden');
+    init();
+  } else {
+    errEl.textContent = 'Incorrect username or password.';
+  }
+}
+async function doSignup() {
+  const teacherName = document.getElementById('login-teacher-name').value.trim();
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const inviteCode = document.getElementById('login-invite-code').value.trim();
+  const errEl = document.getElementById('login-error');
+  errEl.textContent = '';
+  const res = await fetch('/api/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ teacherName, username, password, inviteCode }) });
+  if (res.ok) {
+    document.body.classList.add('authed');
+    document.getElementById('login-screen').classList.add('hidden');
+    init();
+  } else {
+    const body = await res.json().catch(() => ({}));
+    errEl.textContent = body.error === 'invalid invite code' ? 'Invalid invite code.'
+      : body.error === 'username already taken' ? 'That username is already taken.'
+      : 'Username and password are required.';
+  }
+}
+let loginMode = 'signin';
+function setLoginMode(mode) {
+  loginMode = mode;
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('login-teacher-name-group').classList.toggle('hidden', mode !== 'signup');
+  document.getElementById('login-invite-group').classList.toggle('hidden', mode !== 'signup');
+  document.getElementById('login-submit').textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+  document.getElementById('login-toggle-mode').textContent = mode === 'signup' ? 'Already have an account? Sign in' : 'New guru? Create an account';
+}
+async function doLogout() {
+  await fetch('/api/logout', { method: 'POST' });
+  location.reload();
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
@@ -2388,7 +2559,14 @@ function openSettings() {
   document.getElementById('s-name').value = settings.teacherName||'';
   document.getElementById('s-week-start').value = String(settings.weekStartDay ?? 0);
   document.getElementById('s-tz-display').textContent = `${guruTZ.replace(/_/g,' ')} (${tzAbbr(guruTZ)})`;
+  document.getElementById('s-sample-mode').checked = !!settings.sampleDataMode;
   openSheet('settings-sheet');
+}
+function toggleSampleMode(enabled) {
+  settings.sampleDataMode = enabled;
+  saveSettings();
+  applyDataMode();
+  refreshAll();
 }
 function saveSettingsForm() {
   settings.teacherName = document.getElementById('s-name').value.trim();
@@ -2490,6 +2668,12 @@ schedView.addEventListener('click', e => {
 document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
 document.getElementById('fab').addEventListener('click', ()=>{
   if (currentTab === 'schedule') openScheduleSheet(null, true);
+  else if (settings.sampleDataMode) {
+    if (confirm("You're viewing sample data, so a new student here won't be saved. Turn off Sample mode and add a real student now?")) {
+      toggleSampleMode(false);
+      openStudentForm();
+    }
+  }
   else openStudentForm();
 });
 document.getElementById('settings-btn').addEventListener('click', openSettings);
@@ -2578,21 +2762,28 @@ document.getElementById('bs-delete').addEventListener('click', deleteBandish);
 // Settings
 document.getElementById('stg-close').addEventListener('click', ()=>closeSheet('settings-sheet'));
 document.getElementById('stg-save').addEventListener('click', saveSettingsForm);
+document.getElementById('stg-logout').addEventListener('click', doLogout);
+document.getElementById('s-sample-mode').addEventListener('change', e => toggleSampleMode(e.target.checked));
 
 // Search
 document.getElementById('search-input').addEventListener('input', e=>renderStudents(e.target.value));
 
+// Login
+document.getElementById('login-submit').addEventListener('click', () => loginMode === 'signup' ? doSignup() : doLogin());
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') (loginMode === 'signup' ? doSignup() : doLogin()); });
+document.getElementById('login-toggle-mode').addEventListener('click', () => setLoginMode(loginMode === 'signup' ? 'signin' : 'signup'));
+
 // ── Init ───────────────────────────────────────────────────────────────────
-function init() {
+async function init() {
   guruTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  load();
+  await load();
   const wsd = settings.weekStartDay ?? 0;
   const dow = new Date(guruToday() + 'T12:00:00Z').getDay();
   schedWeekDay = (dow - wsd + 7) % 7;
   switchTab('schedule');
 }
 
-init();
+checkAuth();
 </script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+services:
+  guru-app:
+    build: .
+    container_name: guru-app
+    restart: unless-stopped
+    ports:
+      - "5055:5000"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env

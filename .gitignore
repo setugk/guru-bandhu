@@ -1,5 +1,7 @@
 context.md
 docs/
+data/
+.env
 fonts/Uncut-Sans-v1304/
 fonts/basically-a-mono-ver1/
 fonts/necto-mono-main/
